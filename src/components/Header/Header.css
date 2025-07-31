@@ -1,0 +1,51 @@
+.Header {
+  display: flex;
+  width: 100%;
+  color: #fff;
+  margin: 0 auto;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  background: #6f4e37;
+}
+
+.Header__logo {
+  width: 138px;
+  height: 138px;
+  object-fit: contain;
+  position: absolute;
+  left: 20px;
+  top: 62px;
+}
+
+.header__title {
+  position: absolute;
+  left: 20px;
+  top: 62px;
+  margin: 0 auto;
+  font-weight: bold;
+}
+
+.header__auths {
+  margin-left: auto;
+  position: absolute;
+  top: 62px;
+  right: 20px;
+  margin: 0 auto;
+}
+
+.header_auths .login,
+.header_auths .signup {
+  background: none;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.header_auths .login:hover,
+.header_auths .signup:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
