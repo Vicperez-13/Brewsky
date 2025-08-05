@@ -1,0 +1,234 @@
+import React, { useState } from "react";
+import "./AddCardModal.css";
+import { searchLocation } from "../../utils/mapApi";
+
+const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    location: "",
+    rating: 0,
+    review: "",
+    image: "",
+  });
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showErrors, setShowErrors] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (name === "location" && value.length > 2) {
+      handleLocationSearch(value);
+    } else if (name === "location" && value.length <= 2) {
+      setLocationSuggestions([]);
+    }
+  };
+
+  const handleLocationSearch = async (query) => {
+    setIsLoadingLocation(true);
+    try {
+      const suggestions = await searchLocation(query);
+      setLocationSuggestions(suggestions.slice(0, 5));
+    } catch (error) {
+      console.error("Error searching locations:", error);
+      setLocationSuggestions([]);
+    }
+    setIsLoadingLocation(false);
+  };
+
+  const selectLocation = (suggestion) => {
+    setFormData((prev) => ({
+      ...prev,
+      location: suggestion.display_name,
+    }));
+    setLocationSuggestions([]);
+  };
+
+  const handleRatingClick = (rating) => {
+    setFormData((prev) => ({
+      ...prev,
+      rating,
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Coffee shop name is required";
+    }
+
+    if (!formData.location.trim()) {
+      newErrors.location = "Location is required";
+    }
+
+    if (formData.rating === 0) {
+      newErrors.rating = "Please select a rating";
+    }
+
+    if (!formData.review.trim()) {
+      newErrors.review = "Review is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setShowErrors(true);
+
+    if (validateForm()) {
+      onAddCard({
+        ...formData,
+        id: Date.now(),
+        dateAdded: new Date().toISOString(),
+      });
+      setFormData({
+        name: "",
+        location: "",
+        rating: 0,
+        review: "",
+        image: "",
+      });
+      setLocationSuggestions([]);
+      setErrors({});
+      setShowErrors(false);
+      onClose();
+    }
+  };
+
+  const renderCoffeeMugRating = () => {
+    const mugs = [];
+    for (let i = 1; i <= 5; i++) {
+      mugs.push(
+        <button
+          key={i}
+          type="button"
+          className={`rating-mug ${i <= formData.rating ? "filled" : ""}`}
+          onClick={() => handleRatingClick(i)}
+        >
+          ☕
+        </button>
+      );
+    }
+    return mugs;
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="AddCardModal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2>Add Coffee Shop</h2>
+          <button className="close-button" onClick={onClose}>
+            ×
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="form-group">
+            <label htmlFor="name">Coffee Shop Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className={showErrors && errors.name ? "error" : ""}
+            />
+            {showErrors && errors.name && (
+              <span className="error-message">{errors.name}</span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="location">Location</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={formData.location}
+              onChange={handleInputChange}
+              placeholder="Start typing to search locations..."
+              className={showErrors && errors.location ? "error" : ""}
+            />
+            {showErrors && errors.location && (
+              <span className="error-message">{errors.location}</span>
+            )}
+            {isLoadingLocation && <div className="loading">Searching...</div>}
+            {locationSuggestions.length > 0 && (
+              <ul className="location-suggestions">
+                {locationSuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    onClick={() => selectLocation(suggestion)}
+                    className="location-suggestion"
+                  >
+                    {suggestion.display_name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>Rating (1-5)</label>
+            <div className="rating-container">
+              {renderCoffeeMugRating()}
+              <span className="rating-number">{formData.rating}/5</span>
+            </div>
+            {showErrors && errors.rating && (
+              <span className="error-message">{errors.rating}</span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="review">Review</label>
+            <textarea
+              id="review"
+              name="review"
+              value={formData.review}
+              onChange={handleInputChange}
+              rows="4"
+              placeholder="Share your thoughts about this coffee shop..."
+              className={showErrors && errors.review ? "error" : ""}
+            />
+            {showErrors && errors.review && (
+              <span className="error-message">{errors.review}</span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="image">Image URL</label>
+            <input
+              type="url"
+              id="image"
+              name="image"
+              value={formData.image}
+              onChange={handleInputChange}
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
+
+          <div className="form-actions">
+            <button type="button" onClick={onClose} className="cancel-button">
+              Cancel
+            </button>
+            <button type="submit" className="submit-button">
+              Add Coffee Shop
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default AddCardModal;

@@ -1,9 +1,11 @@
 .Footer {
   text-align: center;
   padding: 1rem;
-  background: #f4f4f4;
-  color: #333;
+  background: linear-gradient(135deg, #1f1611, #a67c52);
+  color: #f5f3f0;
   position: fixed;
   width: 100%;
   bottom: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
