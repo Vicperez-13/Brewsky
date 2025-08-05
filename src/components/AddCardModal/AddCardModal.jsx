@@ -9,6 +9,7 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
     rating: 0,
     review: "",
     image: "",
+    coordinates: null,
   });
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
@@ -20,6 +21,8 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+
+      ...(name === "location" ? { coordinates: null } : {}),
     }));
 
     if (name === "location" && value.length > 2) {
@@ -35,7 +38,6 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
       const suggestions = await searchLocation(query);
       setLocationSuggestions(suggestions.slice(0, 5));
     } catch (error) {
-      console.error("Error searching locations:", error);
       setLocationSuggestions([]);
     }
     setIsLoadingLocation(false);
@@ -45,6 +47,7 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
     setFormData((prev) => ({
       ...prev,
       location: suggestion.display_name,
+      coordinates: [parseFloat(suggestion.lon), parseFloat(suggestion.lat)],
     }));
     setLocationSuggestions([]);
   };
@@ -65,6 +68,10 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
 
     if (!formData.location.trim()) {
       newErrors.location = "Location is required";
+    }
+
+    if (!formData.coordinates) {
+      newErrors.location = "Please select a location from the suggestions";
     }
 
     if (formData.rating === 0) {
@@ -95,6 +102,7 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
         rating: 0,
         review: "",
         image: "",
+        coordinates: null,
       });
       setLocationSuggestions([]);
       setErrors({});

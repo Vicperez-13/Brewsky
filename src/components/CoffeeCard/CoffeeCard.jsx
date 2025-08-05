@@ -28,6 +28,9 @@ const CoffeeCard = ({ card, onClick }) => {
       {card.image && (
         <div className="card-image">
           <img src={card.image} alt={card.name} />
+          {card.isUserAdded && (
+            <div className="user-added-badge">👤 User Added</div>
+          )}
         </div>
       )}
 

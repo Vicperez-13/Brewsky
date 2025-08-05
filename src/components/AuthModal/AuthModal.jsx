@@ -1,5 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, createContext, useContext } from "react";
 import "./AuthModal.css";
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+
+  const login = (userData) => {
+    setIsAuthenticated(true);
+    setUser(userData);
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    return {
+      isAuthenticated: false,
+      user: null,
+      login: () => {},
+      logout: () => {},
+    };
+  }
+  return context;
+};
 
 const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
   const [formData, setFormData] = useState({
@@ -71,8 +107,6 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      console.log(`${mode} attempt:`, formData);
-
       alert(`${mode === "login" ? "Login" : "Signup"} successful!`);
       onClose();
 
@@ -84,7 +118,6 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
         lastName: "",
       });
     } catch (error) {
-      console.error("Authentication error:", error);
       setErrors({ general: "Authentication failed. Please try again." });
     } finally {
       setIsLoading(false);

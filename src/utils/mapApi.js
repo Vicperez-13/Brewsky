@@ -14,7 +14,6 @@ export const searchLocation = async (query) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error searching location:", error);
     throw error;
   }
 };
@@ -33,7 +32,20 @@ export const reverseGeocode = async (lat, lon) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error reverse geocoding:", error);
+    throw error;
+  }
+};
+
+export const createCard = async (cardData) => {
+  try {
+    const newCard = {
+      id: Date.now(),
+      ...cardData,
+      dateAdded: new Date().toISOString(),
+    };
+
+    return newCard;
+  } catch (error) {
     throw error;
   }
 };

@@ -3,6 +3,7 @@ import "./App.css";
 import CoffeeCard from "../CoffeeCard/CoffeeCard";
 import AddCardModal from "../AddCardModal/AddCardModal";
 import CoffeeShopModal from "../CoffeeShopModal/CoffeeShopModal";
+import MapView from "../MapView/MapView";
 
 const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   const presetCoffeeShops = [
@@ -64,15 +65,71 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   ];
 
   const [coffeeCards, setCoffeeCards] = useState(presetCoffeeShops);
+  const [customCoffeeShops, setCustomCoffeeShops] = useState([]);
   const [filteredCards, setFilteredCards] = useState(presetCoffeeShops);
   const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null);
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
+  const [currentMapLocation, setCurrentMapLocation] = useState(null);
 
   useEffect(() => {
+    const savedCustomShops = localStorage.getItem("customCoffeeShops");
+    if (savedCustomShops) {
+      try {
+        const parsedShops = JSON.parse(savedCustomShops);
+        setCustomCoffeeShops(parsedShops);
+      } catch (error) {}
+    }
+  }, []);
+
+  const getNearbyCustomCards = (mapLat, mapLng) => {
+    if (!mapLat || !mapLng || !customCoffeeShops.length) return [];
+
+    return customCoffeeShops
+      .filter((shop) => {
+        if (!shop.coordinates || shop.coordinates.length !== 2) return false;
+
+        const distance = Math.sqrt(
+          Math.pow(shop.coordinates[0] - mapLng, 2) +
+            Math.pow(shop.coordinates[1] - mapLat, 2)
+        );
+
+        return distance < 0.05;
+      })
+      .map((shop) => ({
+        id: shop.id.replace("custom-", ""), // Convert back to card ID
+        name: shop.name,
+        location: shop.address,
+        rating: shop.rating || 0,
+        review: shop.review || "User-added coffee shop",
+        image:
+          shop.image ||
+          "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=200&fit=crop",
+        dateAdded: shop.dateAdded,
+        coordinates: shop.coordinates,
+        isUserAdded: true,
+      }));
+  };
+
+  useEffect(() => {
+    let allCards = [...coffeeCards];
+
+    if (currentMapLocation) {
+      const nearbyCustomCards = getNearbyCustomCards(
+        currentMapLocation.lat,
+        currentMapLocation.lng
+      );
+
+      const existingIds = new Set(allCards.map((card) => card.id));
+      const newCustomCards = nearbyCustomCards.filter(
+        (card) => !existingIds.has(card.id)
+      );
+      allCards = [...allCards, ...newCustomCards];
+    }
+
     if (!searchTerm || searchTerm.trim() === "") {
-      setFilteredCards(coffeeCards);
+      setFilteredCards(allCards);
     } else {
-      const filtered = coffeeCards.filter(
+      const filtered = allCards.filter(
         (card) =>
           card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           card.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,11 +138,34 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
       );
       setFilteredCards(filtered);
     }
-  }, [searchTerm, coffeeCards]);
+  }, [searchTerm, coffeeCards, customCoffeeShops, currentMapLocation]);
 
   const handleAddCard = (newCard) => {
     const updatedCards = [newCard, ...coffeeCards];
     setCoffeeCards(updatedCards);
+
+    if (newCard.coordinates) {
+      const customShop = {
+        id: `custom-${newCard.id}`,
+        name: newCard.name,
+        address: newCard.location,
+        coordinates: newCard.coordinates,
+        category: "Coffee Shop",
+        type: "user-added",
+        rating: newCard.rating,
+        review: newCard.review,
+        image: newCard.image,
+        dateAdded: newCard.dateAdded,
+      };
+
+      const updatedCustomShops = [customShop, ...customCoffeeShops];
+      setCustomCoffeeShops(updatedCustomShops);
+
+      localStorage.setItem(
+        "customCoffeeShops",
+        JSON.stringify(updatedCustomShops)
+      );
+    }
   };
 
   const handleDeleteCard = (coffeeShopToDelete) => {
@@ -93,6 +173,15 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
       (card) => card.id !== coffeeShopToDelete.id
     );
     setCoffeeCards(updatedCards);
+
+    const updatedCustomShops = customCoffeeShops.filter(
+      (shop) => shop.id !== `custom-${coffeeShopToDelete.id}`
+    );
+    setCustomCoffeeShops(updatedCustomShops);
+    localStorage.setItem(
+      "customCoffeeShops",
+      JSON.stringify(updatedCustomShops)
+    );
   };
 
   const handleCardClick = (coffeeShop) => {
@@ -105,6 +194,27 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
     setSelectedCoffeeShop(null);
   };
 
+  const handleMapCoffeeShopSelect = (mapShop) => {
+    const coffeeShop = {
+      id: mapShop.id,
+      name: mapShop.name,
+      location: mapShop.address,
+      rating: 0, // Default rating for map shops
+      review: `Discovered coffee shop at ${mapShop.address}`,
+      image:
+        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=200&fit=crop",
+      dateAdded: new Date().toISOString(),
+      coordinates: mapShop.coordinates,
+    };
+
+    setSelectedCoffeeShop(coffeeShop);
+    setIsShopModalOpen(true);
+  };
+
+  const handleMapLocationChange = (lat, lng) => {
+    setCurrentMapLocation({ lat, lng });
+  };
+
   const openModal = () => setIsAddModalOpen(true);
   const closeModal = () => setIsAddModalOpen(false);
 
@@ -114,6 +224,15 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
     <div className="App">
       <div className="app-content">
         <div className="cards-container">
+          <div className="map-card-wrapper">
+            <MapView
+              cards={customCoffeeShops}
+              addCard={handleAddCard}
+              openAddCardModal={openModal}
+              darkMode={false}
+            />
+          </div>
+
           {cardsToDisplay.length > 0 ? (
             cardsToDisplay.map((card) => (
               <CoffeeCard key={card.id} card={card} onClick={handleCardClick} />

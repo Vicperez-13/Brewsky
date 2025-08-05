@@ -133,6 +133,13 @@
   width: 100%;
 }
 
+.map-card-wrapper {
+  
+  min-height: 500px; 
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 480px) {
   .App {
     padding: 1rem 0;
@@ -163,5 +170,9 @@
     grid-template-columns: 1fr;
     gap: 16px;
     padding: 0.5rem 0;
+  }
+
+  .map-card-wrapper {
+    min-height: 400px; 
   }
 }
