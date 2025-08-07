@@ -86,32 +86,18 @@
   font-size: 1rem;
 }
 
-.close-button {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  font-size: 24px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s;
-}
-
-.close-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
 .header-actions {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.delete-button {
+.favorite-button,
+.edit-button,
+.save-button,
+.cancel-button,
+.delete-button,
+.close-button {
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
@@ -123,11 +109,92 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
-.delete-button:hover {
-  background: rgba(255, 100, 100, 0.3);
+.favorite-button:hover,
+.edit-button:hover,
+.save-button:hover,
+.cancel-button:hover,
+.delete-button:hover,
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.favorite-button {
+  background: transparent !important;
+  filter: grayscale(100%) brightness(2);
+}
+
+.favorite-button.favorited {
+  filter: grayscale(0%) brightness(1);
+}
+
+.edit-button {
+  background: rgba(102, 126, 234, 0.8);
+}
+
+.save-button {
+  background: rgba(46, 204, 113, 0.8);
+}
+
+.cancel-button {
+  background: rgba(231, 76, 60, 0.8);
+}
+
+.delete-button {
+  background: rgba(231, 76, 60, 0.8);
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.edit-input,
+.edit-select,
+.edit-textarea {
+  padding: 8px 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.edit-input::placeholder,
+.edit-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.edit-input:focus,
+.edit-select:focus,
+.edit-textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.rating-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-edit label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .delete-confirmation {

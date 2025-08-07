@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import "./AuthModal.css";
 
 const AuthContext = createContext();
@@ -7,18 +7,85 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const savedUser = localStorage.getItem("brewsky_user");
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+      } catch (error) {
+        localStorage.removeItem("brewsky_user");
+      }
+    }
+  }, []);
+
   const login = (userData) => {
+    const userWithDefaults = {
+      ...userData,
+      favorites: userData.favorites || [],
+      posts: userData.posts || [],
+      bio: userData.bio || "",
+      location: userData.location || "",
+      createdAt: userData.createdAt || new Date().toISOString(),
+    };
     setIsAuthenticated(true);
-    setUser(userData);
+    setUser(userWithDefaults);
+    localStorage.setItem("brewsky_user", JSON.stringify(userWithDefaults));
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
+    localStorage.removeItem("brewsky_user");
+  };
+
+  const updateUser = (updatedData) => {
+    const updatedUser = { ...user, ...updatedData };
+    setUser(updatedUser);
+    localStorage.setItem("brewsky_user", JSON.stringify(updatedUser));
+  };
+
+  const addToFavorites = (coffeeShop) => {
+    if (!user) return;
+    const updatedFavorites = [...(user.favorites || [])];
+    const existingIndex = updatedFavorites.findIndex(
+      (fav) => fav.id === coffeeShop.id
+    );
+
+    if (existingIndex === -1) {
+      updatedFavorites.push(coffeeShop);
+    }
+
+    updateUser({ favorites: updatedFavorites });
+  };
+
+  const removeFromFavorites = (coffeeShopId) => {
+    if (!user) return;
+    const updatedFavorites = (user.favorites || []).filter(
+      (fav) => fav.id !== coffeeShopId
+    );
+    updateUser({ favorites: updatedFavorites });
+  };
+
+  const isFavorite = (coffeeShopId) => {
+    if (!user?.favorites) return false;
+    return user.favorites.some((fav) => fav.id === coffeeShopId);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        user,
+        login,
+        logout,
+        updateUser,
+        addToFavorites,
+        removeFromFavorites,
+        isFavorite,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -32,12 +99,17 @@ export const useAuth = () => {
       user: null,
       login: () => {},
       logout: () => {},
+      updateUser: () => {},
+      addToFavorites: () => {},
+      removeFromFavorites: () => {},
+      isFavorite: () => false,
     };
   }
   return context;
 };
 
 const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -107,6 +179,15 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
+      const userData = {
+        id: Date.now(),
+        email: formData.email,
+        firstName: formData.firstName || formData.email.split("@")[0],
+        lastName: formData.lastName || "",
+        createdAt: new Date().toISOString(),
+      };
+
+      login(userData);
       alert(`${mode === "login" ? "Login" : "Signup"} successful!`);
       onClose();
 

@@ -1,7 +1,27 @@
 import React from "react";
+import { useAuth } from "../AuthModal/AuthModal";
 import "./CoffeeCard.css";
 
-const CoffeeCard = ({ card, onClick }) => {
+const CoffeeCard = ({ card, onClick, isFavorite: propIsFavorite }) => {
+  const { isAuthenticated, addToFavorites, removeFromFavorites, isFavorite } =
+    useAuth();
+
+  const cardIsFavorite =
+    propIsFavorite !== undefined ? propIsFavorite : isFavorite(card.id);
+
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      alert("Please log in to add favorites");
+      return;
+    }
+
+    if (cardIsFavorite) {
+      removeFromFavorites(card.id);
+    } else {
+      addToFavorites(card);
+    }
+  };
   const renderCoffeeMugs = (rating) => {
     const mugs = [];
     for (let i = 1; i <= 5; i++) {
@@ -25,6 +45,16 @@ const CoffeeCard = ({ card, onClick }) => {
 
   return (
     <div className="CoffeeCard" onClick={() => onClick(card)}>
+      {isAuthenticated && (
+        <button
+          className={`favorite-btn ${cardIsFavorite ? "favorited" : ""}`}
+          onClick={handleFavoriteClick}
+          title={cardIsFavorite ? "Remove from favorites" : "Add to favorites"}
+        >
+          {cardIsFavorite ? "🫘" : "�"}
+        </button>
+      )}
+
       {card.image && (
         <div className="card-image">
           <img src={card.image} alt={card.name} />
