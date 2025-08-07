@@ -226,9 +226,6 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
           </div>
 
           <div className="form-actions">
-            <button type="button" onClick={onClose} className="cancel-button">
-              Cancel
-            </button>
             <button type="submit" className="submit-button">
               Add Coffee Shop
             </button>
