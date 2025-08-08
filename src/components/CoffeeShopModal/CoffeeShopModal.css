@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(31, 22, 17, 0.7);
+  background: rgba(74, 74, 74, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,23 +15,23 @@
 }
 
 .CoffeeShopModal {
-  background: rgba(245, 243, 240, 0.95);
-  border-radius: 16px;
+  background: rgba(249, 249, 249, 0.95);
+  border-radius: 12px;
   width: 100%;
   max-width: 800px;
   max-height: 90vh;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(31, 22, 17, 0.3);
+  box-shadow: 0 10px 30px rgba(74, 74, 74, 0.2);
   display: flex;
   flex-direction: column;
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(166, 124, 82, 0.2);
+  border: 1px solid rgba(160, 160, 160, 0.2);
 }
 
 .modal-header {
-  background: linear-gradient(135deg, #1f1611, #a67c52);
-  color: #f5f3f0;
+  background: #4a4a4a;
+  color: #ffffff;
   padding: 24px;
   display: flex;
   justify-content: space-between;

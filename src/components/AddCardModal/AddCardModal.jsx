@@ -157,7 +157,7 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
             <button
               onClick={onClose}
               style={{
-                background: "linear-gradient(135deg, #6f4e37, #8b5a3c)",
+                background: "#4A4A4A",
                 color: "white",
                 border: "none",
                 padding: "12px 24px",

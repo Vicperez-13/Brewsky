@@ -9,9 +9,11 @@
   text-align: center;
   margin-bottom: 40px;
   padding: 40px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 20px;
-  color: white;
+  background: #f9f9f9;
+  border-radius: 12px;
+  color: #2d2d2d;
+  border: 1px solid rgba(160, 160, 160, 0.2);
+  box-shadow: 0 4px 16px rgba(160, 160, 160, 0.15);
 }
 
 .favorites-header h1 {
@@ -23,7 +25,8 @@
 .favorites-header p {
   font-size: 1.1rem;
   margin: 0 0 30px;
-  opacity: 0.9;
+  opacity: 0.8;
+  color: #4a4a4a;
 }
 
 .favorites-search {
@@ -34,16 +37,17 @@
 .favorites-search .SearchBar {
   background: white;
   border-radius: 25px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(160, 160, 160, 0.15);
+  border: 1px solid rgba(160, 160, 160, 0.2);
 }
 
 .favorites-search .SearchBar__input {
-  color: #333;
+  color: #2d2d2d;
   background: transparent;
 }
 
 .favorites-search .SearchBar__input::placeholder {
-  color: #999;
+  color: #a0a0a0;
 }
 
 .favorites-content {
@@ -65,13 +69,13 @@
   position: absolute;
   top: -10px;
   right: -10px;
-  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  background: #4a4a4a;
   color: white;
   padding: 8px 15px;
-  border-radius: 20px;
+  border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
-  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 4px 15px rgba(74, 74, 74, 0.3);
   z-index: 10;
   animation: pulse 2s infinite;
 }
@@ -91,19 +95,20 @@
 .no-favorites {
   text-align: center;
   padding: 60px 20px;
-  color: #7f8c8d;
+  color: #a0a0a0;
 }
 
 .no-favorites-icon {
   font-size: 4rem;
   margin-bottom: 20px;
   opacity: 0.6;
+  color: #a0a0a0;
 }
 
 .no-favorites h3 {
   font-size: 1.5rem;
   margin: 0 0 15px;
-  color: #2c3e50;
+  color: #4a4a4a;
 }
 
 .no-favorites p {
@@ -111,22 +116,24 @@
   line-height: 1.6;
   max-width: 400px;
   margin: 0 auto;
+  color: #a0a0a0;
 }
 
 .not-logged-in {
   text-align: center;
   padding: 100px 20px;
-  color: #7f8c8d;
+  color: #a0a0a0;
 }
 
 .not-logged-in h2 {
-  color: #2c3e50;
+  color: #4a4a4a;
   margin-bottom: 15px;
 }
 
 .not-logged-in p {
   font-size: 1.1rem;
   line-height: 1.6;
+  color: #a0a0a0;
 }
 
 @media (max-width: 768px) {

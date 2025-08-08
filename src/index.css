@@ -5,8 +5,8 @@
   font-weight: 400;
 
   color-scheme: light;
-  color: #264653;
-  background: linear-gradient(135deg, #f5f3f0 0%, #edeae6 50%, #f5f3f0 100%);
+  color: #2d2d2d;
+  background: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -41,14 +41,7 @@ body {
   display: block;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    #f5f3f0 0%,
-    #edeae6 25%,
-    #f5f3f0 50%,
-    #e8e4e0 75%,
-    #f5f3f0 100%
-  );
+  background: #ffffff;
   background-attachment: fixed;
   overflow-x: hidden;
   width: 100%;

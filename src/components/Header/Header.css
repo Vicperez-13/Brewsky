@@ -3,16 +3,17 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  color: #fff;
+  color: #2d2d2d;
   padding: 1.2rem 2rem;
   font-size: 1.6rem;
   letter-spacing: 1px;
-  background: linear-gradient(135deg, #1f1611 0%, #2a1f17 50%, #1f1611 100%);
+  background: #ffffff;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(31, 22, 17, 0.3);
+  box-shadow: 0 2px 10px rgba(77, 77, 77, 0.1);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+  border-bottom: 1px solid #f9f9f9;
 }
 
 .Header::before {
@@ -25,7 +26,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.1),
+    rgba(160, 160, 160, 0.05),
     transparent
   );
   transform: translateX(-100%);
@@ -83,18 +84,18 @@
 }
 
 .add-card-button {
-  background: linear-gradient(135deg, #f4a261, #a67c52);
-  color: #1f1611;
+  background: #4a4a4a;
+  color: #ffffff;
   border: 2px solid transparent;
   padding: 12px 24px;
-  border-radius: 50px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 16px;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(244, 162, 97, 0.3);
+  box-shadow: 0 2px 8px rgba(74, 74, 74, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -109,7 +110,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.4),
+    rgba(255, 255, 255, 0.2),
     transparent
   );
   transition: left 0.5s;
@@ -120,15 +121,15 @@
 }
 
 .add-card-button:hover {
-  background: linear-gradient(135deg, #a67c52, #f4a261);
-  border: 2px solid rgba(244, 162, 97, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(244, 162, 97, 0.4);
+  background: #a0a0a0;
+  border: 2px solid rgba(74, 74, 74, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 74, 74, 0.3);
 }
 
 .add-card-button.disabled {
-  background: linear-gradient(135deg, #888, #666);
-  color: #ccc;
+  background: #a0a0a0;
+  color: #f9f9f9;
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -138,9 +139,9 @@
 }
 
 .add-card-button.disabled:hover {
-  background: linear-gradient(135deg, #888, #666);
+  background: #a0a0a0;
   transform: none;
-  box-shadow: 0 4px 15px rgba(136, 136, 136, 0.3);
+  box-shadow: 0 2px 8px rgba(160, 160, 160, 0.3);
   border: 2px solid transparent;
 }
 
@@ -206,12 +207,12 @@
 
 .header__auths__login,
 .header__auths__signup {
-  background: rgba(244, 162, 97, 0.15);
-  border: 2px solid rgba(244, 162, 97, 0.3);
-  color: #f4a261;
+  background: rgba(160, 160, 160, 0.1);
+  border: 2px solid rgba(160, 160, 160, 0.3);
+  color: #4a4a4a;
   padding: 10px 18px;
   cursor: pointer;
-  border-radius: 50px;
+  border-radius: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 14px;
   font-weight: 600;
@@ -245,11 +246,11 @@
 
 .header__auths__login:hover,
 .header__auths__signup:hover {
-  background: rgba(244, 162, 97, 0.25);
-  border: 2px solid rgba(244, 162, 97, 0.5);
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(244, 162, 97, 0.3);
+  background: rgba(160, 160, 160, 0.2);
+  border: 2px solid rgba(160, 160, 160, 0.5);
+  color: #2d2d2d;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(160, 160, 160, 0.3);
 }
 
 .header__user {
@@ -260,12 +261,12 @@
 
 .home-link,
 .favorites-link {
-  color: #f4a261;
+  color: #4a4a4a;
   text-decoration: none;
   padding: 10px 18px;
-  border-radius: 50px;
-  background: rgba(244, 162, 97, 0.15);
-  border: 2px solid rgba(244, 162, 97, 0.3);
+  border-radius: 8px;
+  background: rgba(160, 160, 160, 0.1);
+  border: 2px solid rgba(160, 160, 160, 0.3);
   font-size: 14px;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -275,11 +276,11 @@
 
 .home-link:hover,
 .favorites-link:hover {
-  background: rgba(244, 162, 97, 0.25);
-  border: 2px solid rgba(244, 162, 97, 0.5);
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(244, 162, 97, 0.3);
+  background: rgba(160, 160, 160, 0.2);
+  border: 2px solid rgba(160, 160, 160, 0.5);
+  color: #2d2d2d;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(160, 160, 160, 0.3);
 }
 
 .user-menu {
@@ -292,7 +293,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #4a4a4a;
   color: white;
   border: none;
   font-weight: bold;
@@ -302,16 +303,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px rgba(74, 74, 74, 0.2);
 }
 
 .user-avatar:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(74, 74, 74, 0.3);
 }
 
 .user-greeting {
-  color: #f4a261;
+  color: #4a4a4a;
   font-size: 14px;
   font-weight: 600;
 }
