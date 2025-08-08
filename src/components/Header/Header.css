@@ -126,6 +126,24 @@
   box-shadow: 0 8px 25px rgba(244, 162, 97, 0.4);
 }
 
+.add-card-button.disabled {
+  background: linear-gradient(135deg, #888, #666);
+  color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.add-card-button.disabled::before {
+  display: none;
+}
+
+.add-card-button.disabled:hover {
+  background: linear-gradient(135deg, #888, #666);
+  transform: none;
+  box-shadow: 0 4px 15px rgba(136, 136, 136, 0.3);
+  border: 2px solid transparent;
+}
+
 @media (max-width: 480px) {
   .Header {
     padding: 0.5rem 0.5rem;

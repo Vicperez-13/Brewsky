@@ -9,8 +9,8 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 .AddCardModal {
@@ -22,8 +22,8 @@
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 10px 30px rgba(31, 22, 17, 0.3);
-  backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
   border: 1px solid rgba(166, 124, 82, 0.2);
 }
 

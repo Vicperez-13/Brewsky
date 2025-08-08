@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "./AddCardModal.css";
 import { searchLocation } from "../../utils/mapApi";
+import { useAuth } from "../AuthModal/AuthModal";
 
 const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
+  const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     location: "",
@@ -88,6 +90,13 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!isAuthenticated) {
+      alert("Please log in to add coffee shops");
+      onClose();
+      return;
+    }
+    
     setShowErrors(true);
 
     if (validateForm()) {
@@ -129,6 +138,38 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
   };
 
   if (!isOpen) return null;
+
+  if (!isAuthenticated) {
+    return (
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="AddCardModal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2>Login Required</h2>
+            <button className="close-button" onClick={onClose}>
+              ×
+            </button>
+          </div>
+          <div className="modal-form" style={{ padding: '20px', textAlign: 'center' }}>
+            <p>Please log in to add coffee shops to your collection.</p>
+            <button 
+              onClick={onClose}
+              style={{
+                background: 'linear-gradient(135deg, #6f4e37, #8b5a3c)',
+                color: 'white',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                marginTop: '10px'
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>

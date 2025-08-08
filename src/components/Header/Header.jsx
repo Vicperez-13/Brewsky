@@ -46,9 +46,19 @@ const Header = ({ onSearch, onAddCard }) => {
           <img src={logo} alt="Brewsky Logo" className="Header__logo" />
         </Link>
         <div className="header__actions">
-          <button className="add-card-button" onClick={onAddCard}>
-            + Add Coffee Shop
-          </button>
+          {isAuthenticated ? (
+            <button className="add-card-button" onClick={onAddCard}>
+              + Add Coffee Shop
+            </button>
+          ) : (
+            <button
+              className="add-card-button disabled"
+              onClick={() => openAuthModal("login")}
+              title="Please log in to add coffee shops"
+            >
+              + Add Coffee Shop
+            </button>
+          )}
 
           {isAuthenticated ? (
             <div className="header__user">

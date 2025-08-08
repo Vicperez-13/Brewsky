@@ -58,8 +58,8 @@
   border-radius: 20px;
   margin: 2rem auto;
   max-width: 500px;
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(166, 124, 82, 0.2);
 }
 
@@ -134,8 +134,7 @@
 }
 
 .map-card-wrapper {
-  
-  min-height: 500px; 
+  min-height: 500px;
   display: flex;
   flex-direction: column;
 }
@@ -173,6 +172,6 @@
   }
 
   .map-card-wrapper {
-    min-height: 400px; 
+    min-height: 400px;
   }
 }
