@@ -90,13 +90,13 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!isAuthenticated) {
       alert("Please log in to add coffee shops");
       onClose();
       return;
     }
-    
+
     setShowErrors(true);
 
     if (validateForm()) {
@@ -149,18 +149,21 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
               ×
             </button>
           </div>
-          <div className="modal-form" style={{ padding: '20px', textAlign: 'center' }}>
+          <div
+            className="modal-form"
+            style={{ padding: "20px", textAlign: "center" }}
+          >
             <p>Please log in to add coffee shops to your collection.</p>
-            <button 
+            <button
               onClick={onClose}
               style={{
-                background: 'linear-gradient(135deg, #6f4e37, #8b5a3c)',
-                color: 'white',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                marginTop: '10px'
+                background: "linear-gradient(135deg, #6f4e37, #8b5a3c)",
+                color: "white",
+                border: "none",
+                padding: "12px 24px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                marginTop: "10px",
               }}
             >
               Close
