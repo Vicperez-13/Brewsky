@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./components/AuthModal/AuthModal";
 import App from "./components/App/App";
 import Footer from "./components/Footer/Footer";
