@@ -1,6 +1,6 @@
 # ☕ Brewsky - Coffee Shop Discovery App
 
-[GHP](https://vicperez-13.github.io/Brewsky/)
+[Brewsky](https://vicperez-13.github.io/Brewsky/)
 
 Brewsky is a modern web application for discovering, reviewing, and managing your favorite coffee shops. Built with React and powered by interactive maps, it helps coffee enthusiasts find great spots and keep track of their caffeine adventures.
 
