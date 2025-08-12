@@ -247,22 +247,22 @@ const CoffeeShopModal = ({
             )}
             {canEdit && !isEditing && (
               <button className="edit-button" onClick={handleEdit}>
-                ✏️
+                Edit
               </button>
             )}
             {isEditing && (
               <>
                 <button className="save-button" onClick={handleSaveEdit}>
-                  💾
+                  Save
                 </button>
                 <button className="cancel-button" onClick={handleCancelEdit}>
-                  ❌
+                  Cancel
                 </button>
               </>
             )}
             {canEdit && !isEditing && (
               <button className="delete-button" onClick={confirmDelete}>
-                🗑️
+                Delete
               </button>
             )}
             <button className="close-button" onClick={onClose}>

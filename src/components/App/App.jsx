@@ -4,8 +4,11 @@ import CoffeeCard from "../CoffeeCard/CoffeeCard";
 import AddCardModal from "../AddCardModal/AddCardModal";
 import CoffeeShopModal from "../CoffeeShopModal/CoffeeShopModal";
 import MapView from "../MapView/MapView";
+import FilterSort from "../FilterSort/FilterSort";
+import { useToast } from "../Toast/ToastProvider";
 
 const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
+  const toast = useToast();
   const presetCoffeeShops = [
     {
       id: 1,
@@ -70,6 +73,12 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null);
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
   const [currentMapLocation, setCurrentMapLocation] = useState(null);
+  const [sortBy, setSortBy] = useState("date");
+  const [filterOptions, setFilterOptions] = useState({
+    rating: 0,
+    dateRange: "all",
+    nameRange: "all",
+  });
 
   useEffect(() => {
     const savedCustomShops = localStorage.getItem("customCoffeeShops");
@@ -126,19 +135,83 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
       allCards = [...allCards, ...newCustomCards];
     }
 
-    if (!searchTerm || searchTerm.trim() === "") {
-      setFilteredCards(allCards);
-    } else {
-      const filtered = allCards.filter(
+    if (searchTerm && searchTerm.trim() !== "") {
+      allCards = allCards.filter(
         (card) =>
           card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           card.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
           (card.review &&
             card.review.toLowerCase().includes(searchTerm.toLowerCase()))
       );
-      setFilteredCards(filtered);
     }
-  }, [searchTerm, coffeeCards, customCoffeeShops, currentMapLocation]);
+
+    if (filterOptions.rating > 0) {
+      allCards = allCards.filter((card) => card.rating >= filterOptions.rating);
+    }
+
+    if (filterOptions.dateRange !== "all") {
+      const now = new Date();
+      let cutoffDate = new Date();
+
+      switch (filterOptions.dateRange) {
+        case "week":
+          cutoffDate.setDate(now.getDate() - 7);
+          break;
+        case "month":
+          cutoffDate.setMonth(now.getMonth() - 1);
+          break;
+        case "year":
+          cutoffDate.setFullYear(now.getFullYear() - 1);
+          break;
+        default:
+          cutoffDate = new Date(0);
+      }
+
+      allCards = allCards.filter(
+        (card) => new Date(card.dateAdded) >= cutoffDate
+      );
+    }
+
+    if (filterOptions.nameRange !== "all") {
+      allCards = allCards.filter((card) => {
+        const firstLetter = card.name.toLowerCase().charAt(0);
+        switch (filterOptions.nameRange) {
+          case "a-g":
+            return firstLetter >= "a" && firstLetter <= "g";
+          case "h-n":
+            return firstLetter >= "h" && firstLetter <= "n";
+          case "o-s":
+            return firstLetter >= "o" && firstLetter <= "s";
+          case "t-z":
+            return firstLetter >= "t" && firstLetter <= "z";
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Apply sorting
+    const sortedCards = [...allCards].sort((a, b) => {
+      switch (sortBy) {
+        case "rating":
+          return b.rating - a.rating;
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "date":
+        default:
+          return new Date(b.dateAdded) - new Date(a.dateAdded);
+      }
+    });
+
+    setFilteredCards(sortedCards);
+  }, [
+    searchTerm,
+    coffeeCards,
+    customCoffeeShops,
+    currentMapLocation,
+    sortBy,
+    filterOptions,
+  ]);
 
   const handleAddCard = (newCard) => {
     const updatedCards = [newCard, ...coffeeCards];
@@ -169,19 +242,53 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   };
 
   const handleDeleteCard = (coffeeShopToDelete) => {
-    const updatedCards = coffeeCards.filter(
-      (card) => card.id !== coffeeShopToDelete.id
-    );
-    setCoffeeCards(updatedCards);
+    try {
+      const updatedCards = coffeeCards.filter(
+        (card) => card.id !== coffeeShopToDelete.id
+      );
+      setCoffeeCards(updatedCards);
 
-    const updatedCustomShops = customCoffeeShops.filter(
-      (shop) => shop.id !== `custom-${coffeeShopToDelete.id}`
-    );
-    setCustomCoffeeShops(updatedCustomShops);
-    localStorage.setItem(
-      "customCoffeeShops",
-      JSON.stringify(updatedCustomShops)
-    );
+      const updatedCustomShops = customCoffeeShops.filter(
+        (shop) => shop.id !== `custom-${coffeeShopToDelete.id}`
+      );
+      setCustomCoffeeShops(updatedCustomShops);
+      localStorage.setItem(
+        "customCoffeeShops",
+        JSON.stringify(updatedCustomShops)
+      );
+
+      toast.success(`${coffeeShopToDelete.name} deleted successfully`);
+    } catch (error) {
+      console.error("Failed to delete coffee shop:", error);
+      toast.error("Failed to delete coffee shop. Please try again.");
+    }
+  };
+
+  const handleSort = (newSortBy) => {
+    setSortBy(newSortBy);
+    toast.info(`Sorted by ${newSortBy === "date" ? "date added" : newSortBy}`);
+  };
+
+  const handleFilter = (newFilterOptions) => {
+    setFilterOptions(newFilterOptions);
+
+    // Show appropriate toast message based on filter type
+    if (newFilterOptions.rating > 0) {
+      toast.info(`Showing ${newFilterOptions.rating}+ cup coffee shops`);
+    } else if (newFilterOptions.dateRange !== "all") {
+      const rangeText = {
+        week: "last week",
+        month: "last month",
+        year: "last year",
+      };
+      toast.info(
+        `Showing coffee shops from ${rangeText[newFilterOptions.dateRange]}`
+      );
+    } else if (newFilterOptions.nameRange !== "all") {
+      toast.info(
+        `Showing coffee shops ${newFilterOptions.nameRange.toUpperCase()}`
+      );
+    }
   };
 
   const handleCardClick = (coffeeShop) => {
@@ -223,6 +330,13 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   return (
     <div className="App">
       <div className="app-content">
+        <FilterSort
+          onSort={handleSort}
+          onFilter={handleFilter}
+          totalCount={coffeeCards.length + customCoffeeShops.length}
+          filteredCount={filteredCards.length}
+        />
+
         <div className="cards-container">
           <div className="map-card-wrapper">
             <MapView

@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import "./AddCardModal.css";
 import { searchLocation } from "../../utils/mapApi";
 import { useAuth } from "../AuthModal/AuthModal";
+import { useToast } from "../Toast/ToastProvider";
+import Loading from "../Loading/Loading";
 
 const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
   const { isAuthenticated } = useAuth();
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: "",
     location: "",
@@ -15,6 +18,7 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
   });
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const [showErrors, setShowErrors] = useState(false);
 
@@ -40,7 +44,9 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
       const suggestions = await searchLocation(query);
       setLocationSuggestions(suggestions.slice(0, 5));
     } catch (error) {
+      console.error("Location search failed:", error);
       setLocationSuggestions([]);
+      toast.error("Failed to search locations. Please try again.");
     }
     setIsLoadingLocation(false);
   };
@@ -88,11 +94,11 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!isAuthenticated) {
-      alert("Please log in to add coffee shops");
+      toast.error("Please log in to add coffee shops");
       onClose();
       return;
     }
@@ -100,24 +106,38 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
     setShowErrors(true);
 
     if (validateForm()) {
-      onAddCard({
-        ...formData,
-        id: Date.now(),
-        dateAdded: new Date().toISOString(),
-        isUserAdded: true,
-      });
-      setFormData({
-        name: "",
-        location: "",
-        rating: 0,
-        review: "",
-        image: "",
-        coordinates: null,
-      });
-      setLocationSuggestions([]);
-      setErrors({});
-      setShowErrors(false);
-      onClose();
+      setIsSubmitting(true);
+
+      try {
+        await onAddCard({
+          ...formData,
+          id: Date.now(),
+          dateAdded: new Date().toISOString(),
+          isUserAdded: true,
+        });
+
+        setFormData({
+          name: "",
+          location: "",
+          rating: 0,
+          review: "",
+          image: "",
+          coordinates: null,
+        });
+        setLocationSuggestions([]);
+        setErrors({});
+        setShowErrors(false);
+
+        toast.success(`${formData.name} added successfully!`);
+        onClose();
+      } catch (error) {
+        console.error("Failed to add coffee shop:", error);
+        toast.error("Failed to add coffee shop. Please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      toast.warning("Please fix the errors in the form");
     }
   };
 
@@ -215,7 +235,11 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
             {showErrors && errors.location && (
               <span className="error-message">{errors.location}</span>
             )}
-            {isLoadingLocation && <div className="loading">Searching...</div>}
+            {isLoadingLocation && (
+              <div className="loading-container">
+                <Loading size="small" message="Searching locations..." />
+              </div>
+            )}
             {locationSuggestions.length > 0 && (
               <ul className="location-suggestions">
                 {locationSuggestions.map((suggestion, index) => (
@@ -271,8 +295,18 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="submit-button">
-              Add Coffee Shop
+            <button
+              type="submit"
+              className={`submit-button ${
+                isSubmitting ? "loading-button" : ""
+              }`}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <Loading size="small" message="" />
+              ) : (
+                "Add Coffee Shop"
+              )}
             </button>
           </div>
         </form>

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./SearchBar.css";
 
-const SearchBar = ({
-  onSearch,
-  placeholder = "Search coffee shops by name or location...",
-}) => {
+const SearchBar = ({ onSearch, placeholder = "Search coffee shops..." }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -43,7 +40,7 @@ const SearchBar = ({
         </button>
       )}
       <button type="submit" className="SearchBar__button">
-        🔍
+        Search
       </button>
     </form>
   );

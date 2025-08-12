@@ -134,7 +134,7 @@
 }
 
 .map-card-wrapper {
-  min-height: 500px;
+  min-height: 380px;
   display: flex;
   flex-direction: column;
 }
@@ -172,6 +172,7 @@
   }
 
   .map-card-wrapper {
-    min-height: 400px;
+    min-height: 450px;
+    max-height: 500px;
   }
 }
