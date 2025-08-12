@@ -96,7 +96,7 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
         return distance < 0.05;
       })
       .map((shop) => ({
-        id: shop.id.replace("custom-", ""), // Convert back to card ID
+        id: shop.id.replace("custom-", ""),
         name: shop.name,
         location: shop.address,
         rating: shop.rating || 0,
@@ -199,7 +199,7 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
       id: mapShop.id,
       name: mapShop.name,
       location: mapShop.address,
-      rating: 0, // Default rating for map shops
+      rating: 0,
       review: `Discovered coffee shop at ${mapShop.address}`,
       image:
         "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=200&fit=crop",
@@ -235,7 +235,12 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
 
           {cardsToDisplay.length > 0 ? (
             cardsToDisplay.map((card) => (
-              <CoffeeCard key={card.id} card={card} onClick={handleCardClick} />
+              <CoffeeCard
+                key={card.id}
+                card={card}
+                onClick={handleCardClick}
+                onDelete={handleDeleteCard}
+              />
             ))
           ) : (
             <div className="no-results">

@@ -104,6 +104,7 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
         ...formData,
         id: Date.now(),
         dateAdded: new Date().toISOString(),
+        isUserAdded: true,
       });
       setFormData({
         name: "",

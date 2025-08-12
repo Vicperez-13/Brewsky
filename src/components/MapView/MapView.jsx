@@ -6,8 +6,7 @@ import CoffeeShopModal from "../CoffeeShopModal/CoffeeShopModal";
 import SearchBar from "../SearchBar/SearchBar";
 import "./MapView.css";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoidmljcGVyZXoxMyIsImEiOiJjbWR5enAwazcwN2ZzMmpvNnRqano0dmxiIn0.NGBnqPkFdu3KuQyw3Nq81g";
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
   const mapContainer = useRef(null);
