@@ -4,28 +4,22 @@
 
 Brewsky is a modern web application for discovering, reviewing, and managing your favorite coffee shops. Built with React and powered by interactive maps, it helps coffee enthusiasts find great spots and keep track of their caffeine adventures.
 
-## ✨ Features
+## Features
 
-### 🗺️ **Interactive Map**
+### **Interactive Map**
 
 - Browse coffee shops on an interactive Mapbox-powered map
 - View different types of locations with color-coded markers
 - Search for locations with real-time geocoding
 
-### 📱 **Coffee Shop Management**
+### **Coffee Shop Management**
 
 - **Browse Curated Shops**: Discover popular coffee chains and local favorites
 - **Add Your Own**: Create custom coffee shop entries with photos, reviews, and ratings
 - **Delete Your Cards**: Remove coffee shops you've added (authenticated users only)
 - **Smart Search**: Find shops by name, location, or review content
 
-### ⭐ **Personal Collections**
-
-- **Favorites System**: Save your favorite coffee shops for quick access
-- **User Authentication**: Secure login to manage your personal collection
-- **Rating System**: Rate coffee shops from 1-5 coffee mugs ☕
-
-### 🎨 **Modern UI/UX**
+### **Modern UI/UX**
 
 - Responsive design that works on desktop and mobile
 - Beautiful glassmorphism effects and smooth animations
@@ -35,7 +29,7 @@ Brewsky is a modern web application for discovering, reviewing, and managing you
 
 - Node.js
 
-## 🛠️ Built With
+## Built With
 
 - **Frontend Framework**: React 18 with Vite
 - **Mapping**: Mapbox GL JS for interactive maps
@@ -45,26 +39,7 @@ Brewsky is a modern web application for discovering, reviewing, and managing you
 - **Authentication**: Custom authentication system
 - **Build Tool**: Vite for fast development and optimized builds
 
-## 📁 Project Structure
-
-```
-src/
-├── components/
-│   ├── AddCardModal/          # Modal for adding new coffee shops
-│   ├── App/                   # Main application component
-│   ├── AuthModal/             # Authentication modal
-│   ├── CoffeeCard/            # Coffee shop card component
-│   ├── CoffeeShopModal/       # Detailed coffee shop view
-│   ├── FavoritesPage/         # User favorites page
-│   ├── Header/                # Navigation header
-│   ├── MapView/               # Interactive map component
-│   └── SearchBar/             # Search functionality
-├── utils/
-│   └── mapApi.js              # API utilities for geocoding
-└── assets/                    # Images and static files
-```
-
-## 🎯 Usage
+## Usage
 
 ### Adding a Coffee Shop
 
@@ -94,7 +69,7 @@ src/
 - **Nominatim**: Free geocoding service for address lookup
 - **Local Storage**: Persistent data storage for user preferences
 
-## 🎨 Design Philosophy
+## Design Philosophy
 
 Brewsky embraces a warm, coffee-inspired design with:
 
@@ -103,14 +78,14 @@ Brewsky embraces a warm, coffee-inspired design with:
 - Intuitive user interactions
 - Mobile-first responsive design
 
-## 📱 Browser Support
+## Browser Support
 
 - Chrome (recommended)
 - Firefox
 - Safari
 - Edge
 
-## 🤝 Acknowledgments
+## Acknowledgments
 
 - Mapbox for excellent mapping services
 - OpenStreetMap contributors for geocoding data
