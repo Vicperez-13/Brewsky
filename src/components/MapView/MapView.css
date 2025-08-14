@@ -18,6 +18,10 @@
   flex-direction: column;
 }
 
+.add-card-fab {
+  background-color: #4a4a4a;
+  color: #fff;
+}
 .map-info {
   padding: 1rem 1.5rem;
   background: #f9f9f9;

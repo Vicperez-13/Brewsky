@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../AuthModal/AuthModal";
 import "./CoffeeCard.css";
 
@@ -11,6 +11,28 @@ const CoffeeCard = ({
   const { isAuthenticated, addToFavorites, removeFromFavorites, isFavorite } =
     useAuth();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  useEffect(() => {
+    if (showDeleteConfirm) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPosition = document.body.style.position;
+      const originalTop = document.body.style.top;
+      const scrollY = window.scrollY;
+
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.top = originalTop;
+        document.body.style.width = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [showDeleteConfirm]);
 
   const cardIsFavorite =
     propIsFavorite !== undefined ? propIsFavorite : isFavorite(card.id);
