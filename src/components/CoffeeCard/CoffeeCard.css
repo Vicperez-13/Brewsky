@@ -1,8 +1,8 @@
-.CoffeeCard {
-  background: rgba(249, 249, 249, 0.95);
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(74, 74, 74, 0.1);
-  border: 1px solid rgba(160, 160, 160, 0.2);
+.coffee-card {
+  background: rgba(245, 243, 240, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(31, 22, 17, 0.12);
+  border: 1px solid rgba(166, 124, 82, 0.2);
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 20px;
@@ -14,7 +14,7 @@
   backdrop-filter: blur(10px);
 }
 
-.favorite-btn {
+.coffee-card__favorite-btn {
   position: absolute;
   top: 7px;
   right: 15px;
@@ -33,16 +33,16 @@
   filter: grayscale(100%) brightness(2);
 }
 
-.favorite-btn:hover {
+.coffee-card__favorite-btn:hover {
   transform: scale(1.1);
 }
 
-.favorite-btn.favorited {
+.coffee-card__favorite-btn--favorited {
   filter: grayscale(0%) brightness(1);
   animation: bounce 0.6s ease-in-out;
 }
 
-.delete-btn {
+.coffee-card__delete-btn {
   position: absolute;
   top: 15px;
   right: 65px;
@@ -67,14 +67,14 @@
   font-family: inherit;
 }
 
-.delete-btn:hover {
+.coffee-card__delete-btn:hover {
   background: rgba(164, 69, 178, 0.15);
   box-shadow: 0 2px 8px rgba(164, 69, 178, 0.3);
   transform: translateY(-1px);
   border-color: rgba(164, 69, 178, 0.3);
 }
 
-.delete-confirm-overlay {
+.coffee-card__delete-confirm-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -89,7 +89,7 @@
   -webkit-backdrop-filter: blur(12px);
 }
 
-.delete-confirm-modal {
+.coffee-card__delete-confirm-modal {
   background: rgba(249, 249, 249, 0.96);
   border-radius: 16px;
   padding: 0;
@@ -103,7 +103,7 @@
   position: relative;
 }
 
-.delete-confirm-modal::before {
+.coffee-card__delete-confirm-modal::before {
   content: "";
   position: absolute;
   top: 0;
@@ -118,7 +118,7 @@
   pointer-events: none;
 }
 
-.delete-confirm-modal h3 {
+.coffee-card__delete-confirm-modal h3 {
   margin: 0;
   padding: 24px 24px 0 24px;
   color: #4a4a4a;
@@ -129,7 +129,7 @@
   z-index: 2;
 }
 
-.delete-confirm-modal p {
+.coffee-card__delete-confirm-modal p {
   margin: 12px 0 0 0;
   padding: 0 24px 24px 24px;
   color: #666;
@@ -140,7 +140,7 @@
   z-index: 2;
 }
 
-.delete-confirm-actions {
+.coffee-card__delete-confirm-actions {
   display: flex;
   gap: 12px;
   padding: 0 20px 20px 20px;
@@ -152,8 +152,8 @@
   margin-top: 4px;
 }
 
-.cancel-delete-btn,
-.confirm-delete-btn {
+.coffee-card__cancel-delete-btn,
+.coffee-card__confirm-delete-btn {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
@@ -166,7 +166,7 @@
   letter-spacing: 0.3px;
 }
 
-.cancel-delete-btn {
+.coffee-card__cancel-delete-btn {
   background: rgba(160, 160, 160, 0.1);
   color: #666;
   border: 1px solid rgba(160, 160, 160, 0.3);
@@ -174,21 +174,21 @@
   -webkit-backdrop-filter: blur(5px);
 }
 
-.cancel-delete-btn:hover {
+.coffee-card__cancel-delete-btn:hover {
   background: rgba(160, 160, 160, 0.15);
   border-color: rgba(160, 160, 160, 0.4);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(160, 160, 160, 0.2);
 }
 
-.confirm-delete-btn {
+.coffee-card__confirm-delete-btn {
   background: linear-gradient(135deg, #8e44ad, #9b59b6);
   color: white;
   border: 1px solid rgba(142, 68, 173, 0.3);
   box-shadow: 0 2px 8px rgba(142, 68, 173, 0.25);
 }
 
-.confirm-delete-btn:hover {
+.coffee-card__confirm-delete-btn:hover {
   background: linear-gradient(135deg, #7d3c98, #8e44ad);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(142, 68, 173, 0.35);
@@ -207,7 +207,7 @@
   }
 }
 
-.CoffeeCard::before {
+.coffee-card::before {
   content: "";
   position: absolute;
   top: 0;
@@ -224,35 +224,35 @@
   pointer-events: none;
 }
 
-.CoffeeCard:hover::before {
+.coffee-card:hover::before {
   opacity: 1;
 }
 
-.CoffeeCard:hover {
+.coffee-card:hover {
   transform: translateY(-4px) scale(1.01);
   box-shadow: 0 8px 24px rgba(74, 74, 74, 0.15);
   border: 1px solid rgba(160, 160, 160, 0.3);
 }
 
-.card-image {
+.coffee-card__image {
   width: 100%;
   height: 200px;
   overflow: hidden;
   position: relative;
 }
 
-.card-image img {
+.coffee-card__image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.CoffeeCard:hover .card-image img {
+.coffee-card:hover .coffee-card__image img {
   transform: scale(1.05);
 }
 
-.user-added-badge {
+.coffee-card__user-added-badge {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -266,20 +266,20 @@
   box-shadow: 0 2px 8px rgba(155, 89, 182, 0.3);
 }
 
-.card-content {
+.coffee-card__content {
   padding: 24px;
   position: relative;
   z-index: 2;
 }
 
-.card-name {
+.coffee-card__name {
   margin: 0 0 12px 0;
   font-size: 1.3rem;
   font-weight: 700;
   color: #2d2d2d;
 }
 
-.card-location {
+.coffee-card__location {
   color: #4a4a4a;
   font-size: 0.95rem;
   margin-bottom: 16px;
@@ -289,7 +289,7 @@
   font-weight: 500;
 }
 
-.card-rating {
+.coffee-card__rating {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -300,35 +300,35 @@
   border-left: 3px solid #a0a0a0;
 }
 
-.rating-mugs {
+.coffee-card__rating-mugs {
   display: flex;
   gap: 3px;
 }
 
-.card-mug {
+.coffee-card__mug {
   font-size: 18px;
   filter: grayscale(100%);
   opacity: 0.3;
   transition: all 0.3s ease;
 }
 
-.card-mug.filled {
+.coffee-card__mug--filled {
   filter: grayscale(0%);
   opacity: 1;
   transform: scale(1.1);
 }
 
-.rating-text {
+.coffee-card__rating-text {
   font-weight: 700;
   color: #4a4a4a;
   font-size: 0.95rem;
 }
 
-.card-review {
+.coffee-card__review {
   margin-bottom: 12px;
 }
 
-.card-review p {
+.coffee-card__review p {
   margin: 0;
   font-style: italic;
   color: #4a4a4a;
@@ -339,7 +339,7 @@
   border-left: 4px solid #a0a0a0;
 }
 
-.card-date {
+.coffee-card__date {
   font-size: 0.8rem;
   color: #4a4a4a;
   text-align: right;
@@ -350,43 +350,43 @@
     margin-bottom: 16px;
   }
 
-  .card-image {
+  .coffee-card__image {
     height: 150px;
   }
 
-  .card-content {
+  .coffee-card__content {
     padding: 16px;
   }
 
-  .card-name {
+  .coffee-card__name {
     font-size: 1.1rem;
     margin-bottom: 10px;
   }
 
-  .card-location {
+  .coffee-card__location {
     font-size: 0.85rem;
     margin-bottom: 10px;
   }
 
-  .card-rating {
+  .coffee-card__rating {
     gap: 6px;
     margin-bottom: 10px;
   }
 
-  .card-mug {
+  .coffee-card__mug {
     font-size: 14px;
   }
 
-  .rating-text {
+  .coffee-card__rating-text {
     font-size: 0.85rem;
   }
 
-  .card-review p {
+  .coffee-card__review p {
     padding: 10px;
     font-size: 0.9rem;
   }
 
-  .card-date {
+  .coffee-card__date {
     font-size: 0.75rem;
   }
 }

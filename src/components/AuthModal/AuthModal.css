@@ -1,4 +1,4 @@
-.auth-modal-overlay {
+.auth-modal__overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -49,7 +49,7 @@
   }
 }
 
-.auth-modal-header {
+.auth-modal__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -57,14 +57,14 @@
   margin-bottom: 20px;
 }
 
-.auth-modal-header h2 {
+.auth-modal__header h2 {
   margin: 0;
   font-size: 1.8rem;
   font-weight: 700;
   color: #2d2d2d;
 }
 
-.close-button {
+.auth-modal__close-btn {
   background: none;
   border: none;
   font-size: 28px;
@@ -80,28 +80,28 @@
   transition: all 0.3s ease;
 }
 
-.close-button:hover {
+.auth-modal__close-btn:hover {
   background: rgba(160, 160, 160, 0.1);
   color: #4a4a4a;
   transform: scale(1.1);
 }
 
-.auth-form {
+.auth-modal__form {
   padding: 0 24px 24px 24px;
 }
 
-.form-row {
+.auth-modal__form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 20px;
 }
 
-.form-group {
+.auth-modal__form-group {
   margin-bottom: 20px;
 }
 
-.form-group label {
+.auth-modal__form-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
@@ -109,7 +109,7 @@
   font-size: 14px;
 }
 
-.form-group input {
+.auth-modal__form-group input {
   width: 100%;
   padding: 14px 16px;
   border: 2px solid rgba(160, 160, 160, 0.2);
@@ -121,26 +121,26 @@
   backdrop-filter: blur(10px);
 }
 
-.form-group input:focus {
+.auth-modal__form-group input:focus {
   outline: none;
   border-color: #4a4a4a;
   box-shadow: 0 0 0 3px rgba(74, 74, 74, 0.1);
   background: rgba(255, 255, 255, 0.95);
 }
 
-.form-group input.error {
+.auth-modal__input--error {
   border-color: #e74c3c;
   box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
 }
 
-.error-message {
+.auth-modal__error-message {
   color: #e74c3c;
   font-size: 13px;
   margin-top: 4px;
   display: block;
 }
 
-.general-error {
+.auth-modal__error--general {
   background: rgba(231, 76, 60, 0.1);
   border: 1px solid rgba(231, 76, 60, 0.3);
   border-radius: 8px;
@@ -149,7 +149,7 @@
   text-align: center;
 }
 
-.auth-submit-button {
+.auth-modal__submit-btn {
   width: 100%;
   background: #4a4a4a;
   color: white;
@@ -165,7 +165,7 @@
   overflow: hidden;
 }
 
-.auth-submit-button::before {
+.auth-modal__submit-btn::before {
   content: "";
   position: absolute;
   top: 0;
@@ -181,30 +181,30 @@
   transition: left 0.6s;
 }
 
-.auth-submit-button:hover::before {
+.auth-modal__submit-btn:hover::before {
   left: 100%;
 }
 
-.auth-submit-button:hover:not(:disabled) {
+.auth-modal__submit-btn:hover:not(:disabled) {
   background: #a0a0a0;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(74, 74, 74, 0.3);
 }
 
-.auth-submit-button:disabled {
+.auth-modal__submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
 }
 
-.loading-spinner {
+.auth-modal__loading {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
 
-.spinner {
+.auth-modal__spinner {
   width: 16px;
   height: 16px;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -222,19 +222,19 @@
   }
 }
 
-.auth-switch {
+.auth-modal__switch {
   text-align: center;
   padding-top: 16px;
   border-top: 1px solid rgba(111, 78, 55, 0.2);
 }
 
-.auth-switch p {
+.auth-modal__switch p {
   margin: 0;
   color: #666;
   font-size: 14px;
 }
 
-.switch-button {
+.auth-modal__switch-btn {
   background: none;
   border: none;
   color: #6f4e37;
@@ -245,7 +245,7 @@
   transition: color 0.3s ease;
 }
 
-.switch-button:hover {
+.auth-modal__switch-btn:hover {
   color: #5a3d2a;
 }
 
@@ -256,29 +256,29 @@
     border-radius: 20px;
   }
 
-  .auth-modal-header {
+  .auth-modal__header {
     padding: 20px 20px 0 20px;
   }
 
-  .auth-modal-header h2 {
+  .auth-modal__header h2 {
     font-size: 1.5rem;
   }
 
-  .auth-form {
+  .auth-modal__form {
     padding: 0 20px 20px 20px;
   }
 
-  .form-row {
+  .auth-modal__form-row {
     grid-template-columns: 1fr;
     gap: 0;
   }
 
-  .form-group input {
+  .auth-modal__form-group input {
     padding: 12px 14px;
     font-size: 16px;
   }
 
-  .auth-submit-button {
+  .auth-modal__submit-btn {
     padding: 14px;
     font-size: 15px;
   }

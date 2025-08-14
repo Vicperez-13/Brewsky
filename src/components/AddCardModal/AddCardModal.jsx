@@ -148,7 +148,9 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
         <button
           key={i}
           type="button"
-          className={`rating-mug ${i <= formData.rating ? "filled" : ""}`}
+          className={`add-card-modal__rating-mug ${
+            i <= formData.rating ? "add-card-modal__rating-mug--filled" : ""
+          }`}
           onClick={() => handleRatingClick(i)}
         >
           ☕
@@ -162,16 +164,16 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
 
   if (!isAuthenticated) {
     return (
-      <div className="modal-overlay" onClick={onClose}>
-        <div className="AddCardModal" onClick={(e) => e.stopPropagation()}>
-          <div className="modal-header">
+      <div className="add-card-modal__overlay" onClick={onClose}>
+        <div className="add-card-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="add-card-modal__header">
             <h2>Login Required</h2>
-            <button className="close-button" onClick={onClose}>
+            <button className="add-card-modal__close-btn" onClick={onClose}>
               ×
             </button>
           </div>
           <div
-            className="modal-form"
+            className="add-card-modal__form"
             style={{ padding: "20px", textAlign: "center" }}
           >
             <p>Please log in to add coffee shops to your collection.</p>
@@ -196,17 +198,17 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="AddCardModal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+    <div className="add-card-modal__overlay" onClick={onClose}>
+      <div className="add-card-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="add-card-modal__header">
           <h2>Add Coffee Shop</h2>
-          <button className="close-button" onClick={onClose}>
+          <button className="add-card-modal__close-btn" onClick={onClose}>
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-group">
+        <form onSubmit={handleSubmit} className="add-card-modal__form">
+          <div className="add-card-modal__form-group">
             <label htmlFor="name">Coffee Shop Name</label>
             <input
               type="text"
@@ -214,14 +216,18 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className={showErrors && errors.name ? "error" : ""}
+              className={
+                showErrors && errors.name ? "add-card-modal__input--error" : ""
+              }
             />
             {showErrors && errors.name && (
-              <span className="error-message">{errors.name}</span>
+              <span className="add-card-modal__error-message">
+                {errors.name}
+              </span>
             )}
           </div>
 
-          <div className="form-group">
+          <div className="add-card-modal__form-group">
             <label htmlFor="location">Location</label>
             <input
               type="text"
@@ -230,23 +236,29 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
               value={formData.location}
               onChange={handleInputChange}
               placeholder="Start typing to search locations..."
-              className={showErrors && errors.location ? "error" : ""}
+              className={
+                showErrors && errors.location
+                  ? "add-card-modal__input--error"
+                  : ""
+              }
             />
             {showErrors && errors.location && (
-              <span className="error-message">{errors.location}</span>
+              <span className="add-card-modal__error-message">
+                {errors.location}
+              </span>
             )}
             {isLoadingLocation && (
-              <div className="loading-container">
+              <div className="add-card-modal__loading-container">
                 <Loading size="small" message="Searching locations..." />
               </div>
             )}
             {locationSuggestions.length > 0 && (
-              <ul className="location-suggestions">
+              <ul className="add-card-modal__location-suggestions">
                 {locationSuggestions.map((suggestion, index) => (
                   <li
                     key={index}
                     onClick={() => selectLocation(suggestion)}
-                    className="location-suggestion"
+                    className="add-card-modal__location-suggestion"
                   >
                     {suggestion.display_name}
                   </li>
@@ -255,18 +267,22 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
             )}
           </div>
 
-          <div className="form-group">
+          <div className="add-card-modal__form-group">
             <label>Rating (1-5)</label>
-            <div className="rating-container">
+            <div className="add-card-modal__rating-container">
               {renderCoffeeMugRating()}
-              <span className="rating-number">{formData.rating}/5</span>
+              <span className="add-card-modal__rating-number">
+                {formData.rating}/5
+              </span>
             </div>
             {showErrors && errors.rating && (
-              <span className="error-message">{errors.rating}</span>
+              <span className="add-card-modal__error-message">
+                {errors.rating}
+              </span>
             )}
           </div>
 
-          <div className="form-group">
+          <div className="add-card-modal__form-group">
             <label htmlFor="review">Review</label>
             <textarea
               id="review"
@@ -275,14 +291,20 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
               onChange={handleInputChange}
               rows="4"
               placeholder="Share your thoughts about this coffee shop..."
-              className={showErrors && errors.review ? "error" : ""}
+              className={
+                showErrors && errors.review
+                  ? "add-card-modal__textarea--error"
+                  : ""
+              }
             />
             {showErrors && errors.review && (
-              <span className="error-message">{errors.review}</span>
+              <span className="add-card-modal__error-message">
+                {errors.review}
+              </span>
             )}
           </div>
 
-          <div className="form-group">
+          <div className="add-card-modal__form-group">
             <label htmlFor="image">Image URL</label>
             <input
               type="url"
@@ -294,11 +316,11 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
             />
           </div>
 
-          <div className="form-actions">
+          <div className="add-card-modal__form-actions">
             <button
               type="submit"
-              className={`submit-button ${
-                isSubmitting ? "loading-button" : ""
+              className={`add-card-modal__submit-btn ${
+                isSubmitting ? "add-card-modal__submit-btn--loading" : ""
               }`}
               disabled={isSubmitting}
             >

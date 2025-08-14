@@ -1,4 +1,4 @@
-.modal-overlay {
+.add-card-modal__overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@
   backdrop-filter: blur(8px);
 }
 
-.AddCardModal {
+.add-card-modal {
   background: rgba(249, 249, 249, 0.95);
   border-radius: 12px;
   padding: 0;
@@ -27,7 +27,7 @@
   border: 1px solid rgba(160, 160, 160, 0.2);
 }
 
-.modal-header {
+.add-card-modal__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,12 +38,12 @@
   border-radius: 12px 12px 0 0;
 }
 
-.modal-header h2 {
+.add-card-modal__header h2 {
   margin: 0;
   font-size: 1.5rem;
 }
 
-.close-button {
+.add-card-modal__close-btn {
   background: none;
   border: none;
   font-size: 24px;
@@ -57,29 +57,29 @@
   justify-content: center;
 }
 
-.close-button:hover {
+.add-card-modal__close-btn:hover {
   background: rgba(245, 243, 240, 0.2);
   border-radius: 50%;
 }
 
-.modal-form {
+.add-card-modal__form {
   padding: 24px;
 }
 
-.form-group {
+.add-card-modal__form-group {
   margin-bottom: 20px;
   position: relative;
 }
 
-.form-group label {
+.add-card-modal__form-group label {
   display: block;
   margin-bottom: 6px;
   font-weight: 600;
   color: #2d2d2d;
 }
 
-.form-group input,
-.form-group textarea {
+.add-card-modal__form-group input,
+.add-card-modal__form-group textarea {
   width: 100%;
   padding: 12px;
   border: 2px solid rgba(160, 160, 160, 0.3);
@@ -90,20 +90,20 @@
   color: #2d2d2d;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
+.add-card-modal__form-group input:focus,
+.add-card-modal__form-group textarea:focus {
   outline: none;
   border-color: #a0a0a0;
   background: rgba(245, 243, 240, 1);
 }
 
-.form-group input.error,
-.form-group textarea.error {
+.add-card-modal__input--error,
+.add-card-modal__textarea--error {
   border-color: #d32f2f;
   background-color: #ffebee;
 }
 
-.error-message {
+.add-card-modal__error-message {
   color: #d32f2f;
   font-size: 12px;
   margin-top: 4px;
@@ -111,13 +111,13 @@
   font-weight: 500;
 }
 
-.rating-container {
+.add-card-modal__rating-container {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.rating-mug {
+.add-card-modal__rating-mug {
   background: none;
   border: none;
   font-size: 24px;
@@ -128,23 +128,23 @@
   filter: grayscale(100%);
 }
 
-.rating-mug:hover {
+.add-card-modal__rating-mug:hover {
   transform: scale(1.1);
   filter: grayscale(0%);
 }
 
-.rating-mug.filled {
+.add-card-modal__rating-mug--filled {
   filter: grayscale(0%);
   transform: scale(1.05);
 }
 
-.rating-number {
+.add-card-modal__rating-number {
   font-weight: 600;
   color: #6f4e37;
   margin-left: 8px;
 }
 
-.location-suggestions {
+.add-card-modal__location-suggestions {
   position: absolute;
   top: 100%;
   left: 0;
@@ -161,22 +161,22 @@
   margin: 0;
 }
 
-.location-suggestion {
+.add-card-modal__location-suggestion {
   padding: 12px;
   cursor: pointer;
   border-bottom: 1px solid #f0f0f0;
   font-size: 14px;
 }
 
-.location-suggestion:hover {
+.add-card-modal__location-suggestion:hover {
   background: #f5f5f5;
 }
 
-.location-suggestion:last-child {
+.add-card-modal__location-suggestion:last-child {
   border-bottom: none;
 }
 
-.loading {
+.add-card-modal__loading {
   position: absolute;
   top: 100%;
   left: 0;
@@ -190,7 +190,7 @@
   font-size: 14px;
 }
 
-.form-actions {
+.add-card-modal__form-actions {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
@@ -199,8 +199,8 @@
   border-top: 1px solid #eee;
 }
 
-.cancel-button,
-.submit-button {
+.add-card-modal__cancel-btn,
+.add-card-modal__submit-btn {
   padding: 12px 24px;
   border: none;
   border-radius: 6px;
@@ -210,31 +210,31 @@
   transition: all 0.3s;
 }
 
-.cancel-button {
+.add-card-modal__cancel-btn {
   background: #f5f5f5;
   color: #666;
 }
 
-.cancel-button:hover {
+.add-card-modal__cancel-btn:hover {
   background: #e8e8e8;
 }
 
-.submit-button {
+.add-card-modal__submit-btn {
   background: #6f4e37;
   color: white;
   position: relative;
 }
 
-.submit-button:hover:not(:disabled) {
+.add-card-modal__submit-btn:hover:not(:disabled) {
   background: #5a3d2a;
 }
 
-.submit-button:disabled {
+.add-card-modal__submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
-.loading-container {
+.add-card-modal__loading-container {
   margin: 8px 0;
   padding: 8px;
   background: rgba(160, 160, 160, 0.1);

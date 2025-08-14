@@ -1,4 +1,4 @@
-.Header {
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -16,7 +16,7 @@
   border-bottom: 1px solid #f9f9f9;
 }
 
-.Header::before {
+.header::before {
   content: "";
   position: absolute;
   top: 0;
@@ -42,7 +42,7 @@
   }
 }
 
-.Header__logo {
+.header__logo {
   width: 90px;
   height: 90px;
   object-fit: contain;
@@ -61,7 +61,7 @@
   text-decoration: none;
 }
 
-.Header__logo:hover {
+.header__logo:hover {
   transform: translateX(-50%) scale(1.05);
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
 }
@@ -83,7 +83,7 @@
   max-width: 45%;
 }
 
-.add-card-button {
+.header__add-card-btn {
   background: transparent;
   color: #4a4a4a;
   border: 2px solid #4a4a4a;
@@ -100,7 +100,7 @@
   overflow: hidden;
 }
 
-.add-card-button::before {
+.header__add-card-btn::before {
   content: "";
   position: absolute;
   top: 0;
@@ -116,18 +116,18 @@
   transition: left 0.5s;
 }
 
-.add-card-button:hover::before {
+.header__add-card-btn:hover::before {
   left: 0%;
 }
 
-.add-card-button:hover {
+.header__add-card-btn:hover {
   background: rgba(74, 74, 74, 0.1);
   border: 2px solid #4a4a4a;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(74, 74, 74, 0.2);
 }
 
-.add-card-button.disabled {
+.header__add-card-btn--disabled {
   background: transparent;
   color: #a0a0a0;
   border: 2px solid #a0a0a0;
@@ -135,11 +135,11 @@
   opacity: 0.6;
 }
 
-.add-card-button.disabled::before {
+.header__add-card-btn--disabled::before {
   display: none;
 }
 
-.add-card-button.disabled:hover {
+.header__add-card-btn--disabled:hover {
   background: transparent;
   transform: none;
   box-shadow: none;
@@ -147,7 +147,7 @@
 }
 
 @media (max-width: 480px) {
-  .Header {
+  .header {
     padding: 0.5rem 1rem;
     font-size: 1.2rem;
     flex-wrap: wrap;
@@ -155,7 +155,7 @@
     justify-content: center;
   }
 
-  .Header__logo {
+  .header__logo {
     width: 45px;
     height: 45px;
     position: static;
@@ -185,7 +185,7 @@
     max-width: 100%;
   }
 
-  .add-card-button {
+  .header__add-card-btn {
     padding: 10px 20px;
     font-size: 13px;
     min-height: 44px;
@@ -222,8 +222,7 @@
   gap: 0.5rem;
 }
 
-.header__auths__login,
-.header__auths__signup {
+.header__auth-btn {
   background: transparent;
   border: 2px solid #4a4a4a;
   color: #4a4a4a;
@@ -239,8 +238,7 @@
   overflow: hidden;
 }
 
-.header__auths__login::before,
-.header__auths__signup::before {
+.header__auth-btn::before {
   content: "";
   position: absolute;
   top: 0;
@@ -256,13 +254,11 @@
   transition: left 0.5s;
 }
 
-.header__auths__login:hover::before,
-.header__auths__signup:hover::before {
+.header__auth-btn:hover::before {
   left: 100%;
 }
 
-.header__auths__login:hover,
-.header__auths__signup:hover {
+.header__auth-btn:hover {
   background: rgba(74, 74, 74, 0.1);
   border: 2px solid #4a4a4a;
   color: #2d2d2d;
@@ -276,8 +272,8 @@
   gap: 1rem;
 }
 
-.home-link,
-.favorites-link {
+.header__home-link,
+.header__favorites-link {
   color: #4a4a4a;
   text-decoration: none;
   padding: 10px 18px;
@@ -291,8 +287,8 @@
   backdrop-filter: blur(10px);
 }
 
-.home-link:hover,
-.favorites-link:hover {
+.header__home-link:hover,
+.header__favorites-link:hover {
   background: rgba(74, 74, 74, 0.1);
   border: 2px solid #4a4a4a;
   color: #2d2d2d;
@@ -300,13 +296,13 @@
   box-shadow: 0 2px 8px rgba(74, 74, 74, 0.2);
 }
 
-.user-menu {
+.header__user-menu {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.user-avatar {
+.header__user-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -323,12 +319,12 @@
   box-shadow: 0 2px 8px rgba(74, 74, 74, 0.2);
 }
 
-.user-avatar:hover {
+.header__user-avatar:hover {
   transform: translateY(-1px) scale(1.05);
   box-shadow: 0 4px 12px rgba(74, 74, 74, 0.3);
 }
 
-.user-greeting {
+.header__user-greeting {
   color: #4a4a4a;
   font-size: 14px;
   font-weight: 600;

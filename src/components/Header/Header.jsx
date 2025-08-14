@@ -38,21 +38,21 @@ const Header = ({ onSearch, onAddCard }) => {
 
   return (
     <>
-      <header className="Header">
+      <header className="header">
         <div className="header__left">
           <SearchBar onSearch={onSearch} />
         </div>
         <Link to="/" className="header__logo-link">
-          <img src={logo} alt="Brewsky Logo" className="Header__logo" />
+          <img src={logo} alt="Brewsky Logo" className="header__logo" />
         </Link>
         <div className="header__actions">
           {isAuthenticated ? (
-            <button className="add-card-button" onClick={onAddCard}>
+            <button className="header__add-card-btn" onClick={onAddCard}>
               + Add Coffee Shop
             </button>
           ) : (
             <button
-              className="add-card-button disabled"
+              className="header__add-card-btn header__add-card-btn--disabled"
               onClick={() => openAuthModal("login")}
               title="Please log in to add coffee shops"
             >
@@ -62,20 +62,20 @@ const Header = ({ onSearch, onAddCard }) => {
 
           {isAuthenticated ? (
             <div className="header__user">
-              <Link to="/" className="home-link">
+              <Link to="/" className="header__home-link">
                 Home
               </Link>
-              <Link to="/favorites" className="favorites-link">
+              <Link to="/favorites" className="header__favorites-link">
                 Favorites
               </Link>
-              <div className="user-menu">
+              <div className="header__user-menu">
                 <button
-                  className="user-avatar"
+                  className="header__user-avatar"
                   onClick={() => setIsProfileOpen(true)}
                 >
                   {user?.firstName?.[0]?.toUpperCase() || "U"}
                 </button>
-                <span className="user-greeting">
+                <span className="header__user-greeting">
                   Hi, {user?.firstName || "User"}!
                 </span>
               </div>
@@ -83,13 +83,13 @@ const Header = ({ onSearch, onAddCard }) => {
           ) : (
             <div className="header__auths">
               <button
-                className="header__auths__login"
+                className="header__auth-btn header__auth-btn--login"
                 onClick={() => openAuthModal("login")}
               >
                 Login
               </button>
               <button
-                className="header__auths__signup"
+                className="header__auth-btn header__auth-btn--signup"
                 onClick={() => openAuthModal("signup")}
               >
                 Sign Up
