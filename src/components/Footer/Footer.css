@@ -1,12 +1,12 @@
 .footer {
   text-align: center;
-  background: #4a4a4a;
-  color: #ffffff;
+  background: none;
+  color: #2a2222;
   position: fixed;
   width: 100%;
   bottom: 0;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   margin: 0 auto;
 }
 
