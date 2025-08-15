@@ -120,22 +120,18 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      // Store the original styles
       const originalOverflow = document.body.style.overflow;
       const originalPosition = document.body.style.position;
       const originalTop = document.body.style.top;
       const scrollY = window.scrollY;
 
-      // Apply scroll prevention styles
       document.body.style.overflow = "hidden";
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
 
-      // Cleanup function to restore original state
       return () => {
         document.body.style.overflow = originalOverflow;
         document.body.style.position = originalPosition;

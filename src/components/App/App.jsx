@@ -190,7 +190,6 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
       });
     }
 
-    // Apply sorting
     const sortedCards = [...allCards].sort((a, b) => {
       switch (sortBy) {
         case "rating":
@@ -272,7 +271,6 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   const handleFilter = (newFilterOptions) => {
     setFilterOptions(newFilterOptions);
 
-    // Show appropriate toast message based on filter type
     if (newFilterOptions.rating > 0) {
       toast.info(`Showing ${newFilterOptions.rating}+ cup coffee shops`);
     } else if (newFilterOptions.dateRange !== "all") {
