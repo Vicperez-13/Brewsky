@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../AuthModal/AuthModal";
+import { useAuth } from "../AuthModal/useAuth";
 import "./CoffeeCard.css";
 
 const CoffeeCard = ({

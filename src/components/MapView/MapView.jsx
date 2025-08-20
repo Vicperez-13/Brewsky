@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
-import { useAuth } from "../AuthModal/AuthModal";
+import { useAuth } from "../AuthModal/useAuth";
 import { createCard } from "../../utils/mapApi";
 import CoffeeShopModal from "../CoffeeShopModal/CoffeeShopModal";
 import SearchBar from "../SearchBar/SearchBar";
@@ -169,7 +169,9 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
         }),
         "top-right"
       );
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
 
     return () => {
       if (map.current) {
@@ -184,10 +186,14 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
 
   useEffect(() => {
     if (map.current) {
-      const style = darkMode
-        ? "mapbox://styles/mapbox/dark-v11"
-        : "mapbox://styles/mapbox/light-v11";
-      map.current.setStyle(style);
+      try {
+        const style = darkMode
+          ? "mapbox://styles/mapbox/dark-v11"
+          : "mapbox://styles/mapbox/light-v11";
+        map.current.setStyle(style);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }, [darkMode]);
 
@@ -219,7 +225,9 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
         });
 
         newMarkers.push(marker);
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     if (cards && Array.isArray(cards)) {
@@ -261,7 +269,9 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
 
             newMarkers.push(marker);
           }
-        } catch (error) {}
+        } catch (error) {
+          console.error(error);
+        }
       });
     }
 
@@ -274,11 +284,11 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
         alert("Please log in to add cards");
         return;
       }
-
       const newCard = await createCard(cardData);
       addCard(newCard);
     } catch (error) {
       alert("Failed to add card. Please try again.");
+      console.error(error);
     }
   };
 

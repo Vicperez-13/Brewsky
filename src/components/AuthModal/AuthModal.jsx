@@ -1,7 +1,6 @@
-import React, { useState, createContext, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { AuthContext } from "./AuthContext";
 import "./AuthModal.css";
-
-const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,7 +13,7 @@ export const AuthProvider = ({ children }) => {
         const parsedUser = JSON.parse(savedUser);
         setUser(parsedUser);
         setIsAuthenticated(true);
-      } catch (error) {
+      } catch {
         localStorage.removeItem("brewsky_user");
       }
     }
@@ -91,22 +90,7 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    return {
-      isAuthenticated: false,
-      user: null,
-      login: () => {},
-      logout: () => {},
-      updateUser: () => {},
-      addToFavorites: () => {},
-      removeFromFavorites: () => {},
-      isFavorite: () => false,
-    };
-  }
-  return context;
-};
+import { useAuth } from "./useAuth";
 
 const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
   const { login } = useAuth();
@@ -220,7 +204,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
         firstName: "",
         lastName: "",
       });
-    } catch (error) {
+    } catch {
       setErrors({ general: "Authentication failed. Please try again." });
     } finally {
       setIsLoading(false);

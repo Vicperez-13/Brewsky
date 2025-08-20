@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./AddCardModal.css";
 import { searchLocation } from "../../utils/mapApi";
-import { useAuth } from "../AuthModal/AuthModal";
-import { useToast } from "../Toast/ToastProvider";
+import { useAuth } from "../AuthModal/useAuth";
+import { useToast } from "../Toast/useToast";
 import Loading from "../Loading/Loading";
 
 const AddCardModal = ({ isOpen, onClose, onAddCard }) => {

@@ -5,7 +5,7 @@ import AddCardModal from "../AddCardModal/AddCardModal";
 import CoffeeShopModal from "../CoffeeShopModal/CoffeeShopModal";
 import MapView from "../MapView/MapView";
 import FilterSort from "../FilterSort/FilterSort";
-import { useToast } from "../Toast/ToastProvider";
+import { useToast } from "../Toast/useToast";
 
 const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   const toast = useToast();
@@ -72,7 +72,7 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   const [filteredCards, setFilteredCards] = useState(presetCoffeeShops);
   const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null);
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
-  const [currentMapLocation, setCurrentMapLocation] = useState(null);
+  const [currentMapLocation] = useState(null);
   const [sortBy, setSortBy] = useState("date");
   const [filterOptions, setFilterOptions] = useState({
     rating: 0,
@@ -86,7 +86,9 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
       try {
         const parsedShops = JSON.parse(savedCustomShops);
         setCustomCoffeeShops(parsedShops);
-      } catch (error) {}
+      } catch {
+        localStorage.removeItem("customCoffeeShops");
+      }
     }
   }, []);
 
@@ -297,27 +299,6 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   const handleCloseShopModal = () => {
     setIsShopModalOpen(false);
     setSelectedCoffeeShop(null);
-  };
-
-  const handleMapCoffeeShopSelect = (mapShop) => {
-    const coffeeShop = {
-      id: mapShop.id,
-      name: mapShop.name,
-      location: mapShop.address,
-      rating: 0,
-      review: `Discovered coffee shop at ${mapShop.address}`,
-      image:
-        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=200&fit=crop",
-      dateAdded: new Date().toISOString(),
-      coordinates: mapShop.coordinates,
-    };
-
-    setSelectedCoffeeShop(coffeeShop);
-    setIsShopModalOpen(true);
-  };
-
-  const handleMapLocationChange = (lat, lng) => {
-    setCurrentMapLocation({ lat, lng });
   };
 
   const openModal = () => setIsAddModalOpen(true);

@@ -5,7 +5,7 @@ import logo from "../../assets/brewsky_logo.png";
 import SearchBar from "../SearchBar/SearchBar";
 import AuthModal from "../AuthModal/AuthModal";
 import UserProfile from "../UserProfile/UserProfile";
-import { useAuth } from "../AuthModal/AuthModal";
+import { useAuth } from "../AuthModal/useAuth";
 
 const Header = ({ onSearch, onAddCard }) => {
   const { isAuthenticated, user } = useAuth();

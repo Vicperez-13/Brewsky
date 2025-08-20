@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../AuthModal/AuthModal";
+import { useAuth } from "../AuthModal/useAuth";
 import "./CoffeeShopModal.css";
 
 const CoffeeShopModal = ({
@@ -9,13 +9,8 @@ const CoffeeShopModal = ({
   onDelete,
   onUpdate,
 }) => {
-  const {
-    user,
-    isAuthenticated,
-    addToFavorites,
-    removeFromFavorites,
-    isFavorite,
-  } = useAuth();
+  const { isAuthenticated, addToFavorites, removeFromFavorites, isFavorite } =
+    useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
