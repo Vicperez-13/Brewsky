@@ -59,17 +59,17 @@ const FavoritesPage = () => {
 
       <div className="favorites-content">
         {filteredFavorites.length > 0 ? (
-          <div className="favorites-grid">
+          <ul className="favorites-grid">
             {filteredFavorites.map((favorite) => (
-              <div key={favorite.id} className="favorite-card-wrapper">
+              <li key={favorite.id} className="favorite-card-wrapper">
                 <CoffeeCard
                   card={favorite}
                   onClick={() => {}}
                   isFavorite={true}
                 />
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         ) : (
           <div className="no-favorites">
             {user?.favorites?.length === 0 ? (

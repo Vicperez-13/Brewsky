@@ -346,14 +346,17 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
           </div>
 
           {cardsToDisplay.length > 0 ? (
-            cardsToDisplay.map((card) => (
-              <CoffeeCard
-                key={card.id}
-                card={card}
-                onClick={handleCardClick}
-                onDelete={handleDeleteCard}
-              />
-            ))
+            <ul className="coffee-card-list">
+              {cardsToDisplay.map((card) => (
+                <li key={card.id} className="coffee-card-list-item">
+                  <CoffeeCard
+                    card={card}
+                    onClick={handleCardClick}
+                    onDelete={handleDeleteCard}
+                  />
+                </li>
+              ))}
+            </ul>
           ) : (
             <div className="no-results">
               <p>No coffee shops found matching your search.</p>
