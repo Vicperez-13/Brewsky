@@ -336,18 +336,19 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
         />
 
         <div className="cards-container">
-          <div className="map-card-wrapper">
-            <MapView
-              cards={customCoffeeShops}
-              addCard={handleAddCard}
-              openAddCardModal={openModal}
-              darkMode={false}
-            />
-          </div>
-
-          {cardsToDisplay.length > 0 ? (
-            <ul className="coffee-card-list">
-              {cardsToDisplay.map((card) => (
+          <ul className="coffee-card-list">
+            <li className="coffee-card-list-item map-card-list-item">
+              <div className="map-card-wrapper">
+                <MapView
+                  cards={customCoffeeShops}
+                  addCard={handleAddCard}
+                  openAddCardModal={openModal}
+                  darkMode={false}
+                />
+              </div>
+            </li>
+            {cardsToDisplay.length > 0 ? (
+              cardsToDisplay.map((card) => (
                 <li key={card.id} className="coffee-card-list-item">
                   <CoffeeCard
                     card={card}
@@ -355,14 +356,16 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
                     onDelete={handleDeleteCard}
                   />
                 </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="no-results">
-              <p>No coffee shops found matching your search.</p>
-              <p>Try searching by name or location.</p>
-            </div>
-          )}
+              ))
+            ) : (
+              <li className="coffee-card-list-item">
+                <div className="no-results">
+                  <p>No coffee shops found matching your search.</p>
+                  <p>Try searching by name or location.</p>
+                </div>
+              </li>
+            )}
+          </ul>
         </div>
       </div>
 
