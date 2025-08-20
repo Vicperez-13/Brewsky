@@ -346,8 +346,9 @@
 }
 
 @media (max-width: 480px) {
-  .CoffeeCard {
-    margin-bottom: 16px;
+  .coffee-card {
+    width: calc(100% - 16px);
+    margin: 0 auto 16px auto;
   }
 
   .coffee-card__image {
