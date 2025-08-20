@@ -128,7 +128,6 @@
 .cards-container {
   width: 100%;
   padding: 1rem 0;
-  /* grid layout handled by .coffee-card-list */
 }
 
 .coffee-card-list {
