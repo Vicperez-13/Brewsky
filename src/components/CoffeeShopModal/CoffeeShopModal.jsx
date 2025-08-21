@@ -1,15 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../AuthModal/useAuth";
 import "./CoffeeShopModal.css";
 
-const CoffeeShopModal = ({ isOpen, onClose, coffeeShop, onDelete }) => {
+const CoffeeShopModal = ({
+  isOpen,
+  onClose,
+  coffeeShop,
+  onDelete,
+  onUpdate,
+}) => {
+  const { isAuthenticated, addToFavorites, removeFromFavorites, isFavorite } =
+    useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    location: "",
+    rating: 0,
+    review: "",
+  });
+
+  const canEdit = isAuthenticated && coffeeShop?.isUserAdded;
+
+  useEffect(() => {
+    if (isOpen || showDeleteConfirm) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPosition = document.body.style.position;
+      const originalTop = document.body.style.top;
+      const scrollY = window.scrollY;
+
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.top = originalTop;
+        document.body.style.width = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen, showDeleteConfirm]);
 
   if (!isOpen || !coffeeShop) return null;
 
   const handleDelete = () => {
     onDelete(coffeeShop);
     onClose();
+  };
+
+  const handleEdit = () => {
+    setEditForm({
+      name: coffeeShop.name,
+      location: coffeeShop.location,
+      rating: coffeeShop.rating,
+      review: coffeeShop.review || "",
+    });
+    setIsEditing(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (onUpdate) {
+      onUpdate(coffeeShop.id, editForm);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditForm({
+      name: "",
+      location: "",
+      rating: 0,
+      review: "",
+    });
+  };
+
+  const handleFavoriteToggle = () => {
+    if (!isAuthenticated) {
+      alert("Please log in to add favorites");
+      return;
+    }
+
+    if (isFavorite(coffeeShop.id)) {
+      removeFromFavorites(coffeeShop.id);
+    } else {
+      addToFavorites(coffeeShop);
+    }
   };
 
   const confirmDelete = () => {
@@ -99,24 +179,109 @@ const CoffeeShopModal = ({ isOpen, onClose, coffeeShop, onDelete }) => {
       <div className="CoffeeShopModal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="header-content">
-            <h2>{coffeeShop.name}</h2>
-            <div className="location-date">
-              <p className="location">📍 {coffeeShop.location}</p>
-              <p className="date-added">
-                Added {formatDate(coffeeShop.dateAdded)}
-              </p>
-            </div>
-            <div className="rating-display">
-              <div className="rating-mugs">
-                {renderCoffeeMugs(coffeeShop.rating)}
+            {!isEditing ? (
+              <>
+                <h2>{coffeeShop.name}</h2>
+                <div className="location-date">
+                  <p className="location">📍 {coffeeShop.location}</p>
+                  <p className="date-added">
+                    Added {formatDate(coffeeShop.dateAdded)}
+                  </p>
+                </div>
+                <div className="rating-display">
+                  <div className="rating-mugs">
+                    {renderCoffeeMugs(coffeeShop.rating)}
+                  </div>
+                  <span className="rating-text">{coffeeShop.rating}/5</span>
+                </div>
+              </>
+            ) : (
+              <div className="edit-form">
+                <input
+                  type="text"
+                  value={editForm.name}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, name: e.target.value })
+                  }
+                  placeholder="Coffee shop name"
+                  className="edit-input"
+                />
+                <input
+                  type="text"
+                  value={editForm.location}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, location: e.target.value })
+                  }
+                  placeholder="Location"
+                  className="edit-input"
+                />
+                <div className="rating-edit">
+                  <label>Rating:</label>
+                  <select
+                    value={editForm.rating}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        rating: parseInt(e.target.value),
+                      })
+                    }
+                    className="edit-select"
+                  >
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <option key={num} value={num}>
+                        {num} ☕
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <textarea
+                  value={editForm.review}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, review: e.target.value })
+                  }
+                  placeholder="Your review..."
+                  className="edit-textarea"
+                  rows="3"
+                />
               </div>
-              <span className="rating-text">{coffeeShop.rating}/5</span>
-            </div>
+            )}
           </div>
           <div className="header-actions">
-            <button className="delete-button" onClick={confirmDelete}>
-              🗑️
-            </button>
+            {isAuthenticated && (
+              <button
+                className={`favorite-button ${
+                  isFavorite(coffeeShop.id) ? "favorited" : ""
+                }`}
+                onClick={handleFavoriteToggle}
+                title={
+                  isFavorite(coffeeShop.id)
+                    ? "Remove from favorites"
+                    : "Add to favorites"
+                }
+              >
+                {isFavorite(coffeeShop.id) ? "🫘" : "�"}
+              </button>
+            )}
+            {canEdit && !isEditing && (
+              <button className="edit-button" onClick={handleEdit}>
+                Edit
+              </button>
+            )}
+            {isEditing && (
+              <>
+                <button className="save-button" onClick={handleSaveEdit}>
+                  Save
+                </button>
+                <button className="cancel-button" onClick={handleCancelEdit}>
+                  Cancel
+                </button>
+              </>
+            )}
+            {canEdit && !isEditing && (
+              <button className="delete-button" onClick={confirmDelete}>
+                Delete
+              </button>
+            )}
             <button className="close-button" onClick={onClose}>
               ×
             </button>

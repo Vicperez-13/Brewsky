@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AddCardModal.css";
 import { searchLocation } from "../../utils/mapApi";
+import { useAuth } from "../AuthModal/useAuth";
+import { useToast } from "../Toast/useToast";
+import Loading from "../Loading/Loading";
 
 const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
+  const { isAuthenticated } = useAuth();
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: "",
     location: "",
@@ -13,8 +18,31 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
   });
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const [showErrors, setShowErrors] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPosition = document.body.style.position;
+      const originalTop = document.body.style.top;
+      const scrollY = window.scrollY;
+
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.top = originalTop;
+        document.body.style.width = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,7 +66,9 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
       const suggestions = await searchLocation(query);
       setLocationSuggestions(suggestions.slice(0, 5));
     } catch (error) {
+      console.error("Location search failed:", error);
       setLocationSuggestions([]);
+      toast.error("Failed to search locations. Please try again.");
     }
     setIsLoadingLocation(false);
   };
@@ -86,28 +116,50 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isAuthenticated) {
+      toast.error("Please log in to add coffee shops");
+      onClose();
+      return;
+    }
+
     setShowErrors(true);
 
     if (validateForm()) {
-      onAddCard({
-        ...formData,
-        id: Date.now(),
-        dateAdded: new Date().toISOString(),
-      });
-      setFormData({
-        name: "",
-        location: "",
-        rating: 0,
-        review: "",
-        image: "",
-        coordinates: null,
-      });
-      setLocationSuggestions([]);
-      setErrors({});
-      setShowErrors(false);
-      onClose();
+      setIsSubmitting(true);
+
+      try {
+        await onAddCard({
+          ...formData,
+          id: Date.now(),
+          dateAdded: new Date().toISOString(),
+          isUserAdded: true,
+        });
+
+        setFormData({
+          name: "",
+          location: "",
+          rating: 0,
+          review: "",
+          image: "",
+          coordinates: null,
+        });
+        setLocationSuggestions([]);
+        setErrors({});
+        setShowErrors(false);
+
+        toast.success(`${formData.name} added successfully!`);
+        onClose();
+      } catch (error) {
+        console.error("Failed to add coffee shop:", error);
+        toast.error("Failed to add coffee shop. Please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      toast.warning("Please fix the errors in the form");
     }
   };
 
@@ -118,7 +170,9 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
         <button
           key={i}
           type="button"
-          className={`rating-mug ${i <= formData.rating ? "filled" : ""}`}
+          className={`add-card-modal__rating-mug ${
+            i <= formData.rating ? "add-card-modal__rating-mug--filled" : ""
+          }`}
           onClick={() => handleRatingClick(i)}
         >
           ☕
@@ -130,18 +184,53 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
 
   if (!isOpen) return null;
 
+  if (!isAuthenticated) {
+    return (
+      <div className="add-card-modal__overlay" onClick={onClose}>
+        <div className="add-card-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="add-card-modal__header">
+            <h2>Login Required</h2>
+            <button className="add-card-modal__close-btn" onClick={onClose}>
+              ×
+            </button>
+          </div>
+          <div
+            className="add-card-modal__form"
+            style={{ padding: "20px", textAlign: "center" }}
+          >
+            <p>Please log in to add coffee shops to your collection.</p>
+            <button
+              onClick={onClose}
+              style={{
+                background: "#4A4A4A",
+                color: "white",
+                border: "none",
+                padding: "12px 24px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                marginTop: "10px",
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="AddCardModal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+    <div className="add-card-modal__overlay" onClick={onClose}>
+      <div className="add-card-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="add-card-modal__header">
           <h2>Add Coffee Shop</h2>
-          <button className="close-button" onClick={onClose}>
+          <button className="add-card-modal__close-btn" onClick={onClose}>
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-group">
+        <form onSubmit={handleSubmit} className="add-card-modal__form">
+          <div className="add-card-modal__form-group">
             <label htmlFor="name">Coffee Shop Name</label>
             <input
               type="text"
@@ -149,14 +238,18 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className={showErrors && errors.name ? "error" : ""}
+              className={
+                showErrors && errors.name ? "add-card-modal__input--error" : ""
+              }
             />
             {showErrors && errors.name && (
-              <span className="error-message">{errors.name}</span>
+              <span className="add-card-modal__error-message">
+                {errors.name}
+              </span>
             )}
           </div>
 
-          <div className="form-group">
+          <div className="add-card-modal__form-group">
             <label htmlFor="location">Location</label>
             <input
               type="text"
@@ -165,19 +258,29 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
               value={formData.location}
               onChange={handleInputChange}
               placeholder="Start typing to search locations..."
-              className={showErrors && errors.location ? "error" : ""}
+              className={
+                showErrors && errors.location
+                  ? "add-card-modal__input--error"
+                  : ""
+              }
             />
             {showErrors && errors.location && (
-              <span className="error-message">{errors.location}</span>
+              <span className="add-card-modal__error-message">
+                {errors.location}
+              </span>
             )}
-            {isLoadingLocation && <div className="loading">Searching...</div>}
+            {isLoadingLocation && (
+              <div className="add-card-modal__loading-container">
+                <Loading size="small" message="Searching locations..." />
+              </div>
+            )}
             {locationSuggestions.length > 0 && (
-              <ul className="location-suggestions">
+              <ul className="add-card-modal__location-suggestions">
                 {locationSuggestions.map((suggestion, index) => (
                   <li
                     key={index}
                     onClick={() => selectLocation(suggestion)}
-                    className="location-suggestion"
+                    className="add-card-modal__location-suggestion"
                   >
                     {suggestion.display_name}
                   </li>
@@ -186,18 +289,22 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
             )}
           </div>
 
-          <div className="form-group">
+          <div className="add-card-modal__form-group">
             <label>Rating (1-5)</label>
-            <div className="rating-container">
+            <div className="add-card-modal__rating-container">
               {renderCoffeeMugRating()}
-              <span className="rating-number">{formData.rating}/5</span>
+              <span className="add-card-modal__rating-number">
+                {formData.rating}/5
+              </span>
             </div>
             {showErrors && errors.rating && (
-              <span className="error-message">{errors.rating}</span>
+              <span className="add-card-modal__error-message">
+                {errors.rating}
+              </span>
             )}
           </div>
 
-          <div className="form-group">
+          <div className="add-card-modal__form-group">
             <label htmlFor="review">Review</label>
             <textarea
               id="review"
@@ -206,14 +313,20 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
               onChange={handleInputChange}
               rows="4"
               placeholder="Share your thoughts about this coffee shop..."
-              className={showErrors && errors.review ? "error" : ""}
+              className={
+                showErrors && errors.review
+                  ? "add-card-modal__textarea--error"
+                  : ""
+              }
             />
             {showErrors && errors.review && (
-              <span className="error-message">{errors.review}</span>
+              <span className="add-card-modal__error-message">
+                {errors.review}
+              </span>
             )}
           </div>
 
-          <div className="form-group">
+          <div className="add-card-modal__form-group">
             <label htmlFor="image">Image URL</label>
             <input
               type="url"
@@ -225,12 +338,19 @@ const AddCardModal = ({ isOpen, onClose, onAddCard }) => {
             />
           </div>
 
-          <div className="form-actions">
-            <button type="button" onClick={onClose} className="cancel-button">
-              Cancel
-            </button>
-            <button type="submit" className="submit-button">
-              Add Coffee Shop
+          <div className="add-card-modal__form-actions">
+            <button
+              type="submit"
+              className={`add-card-modal__submit-btn ${
+                isSubmitting ? "add-card-modal__submit-btn--loading" : ""
+              }`}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <Loading size="small" message="" />
+              ) : (
+                "Add Coffee Shop"
+              )}
             </button>
           </div>
         </form>

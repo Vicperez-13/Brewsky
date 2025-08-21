@@ -1,12 +1,12 @@
 .SearchBar {
   display: flex;
   align-items: center;
-  background: rgba(245, 243, 240, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  border-radius: 50px;
-  box-shadow: 0 8px 32px rgba(31, 22, 17, 0.15);
-  border: 1px solid rgba(166, 124, 82, 0.2);
+  border-radius: 30px;
+  box-shadow: 0 8px 32px rgba(160, 160, 160, 0.15);
+  border: 1px solid rgba(160, 160, 160, 0.2);
   padding: 12px 20px;
   margin: 1rem;
   max-width: 450px;
@@ -16,13 +16,13 @@
 }
 
 .SearchBar:hover {
-  box-shadow: 0 12px 40px rgba(31, 22, 17, 0.2);
+  box-shadow: 0 12px 40px rgba(160, 160, 160, 0.2);
   transform: translateY(-2px);
 }
 
 .SearchBar:focus-within {
-  box-shadow: 0 12px 40px rgba(244, 162, 97, 0.25);
-  border: 1px solid rgba(244, 162, 97, 0.4);
+  box-shadow: 0 12px 40px rgba(160, 160, 160, 0.25);
+  border: 1px solid rgba(160, 160, 160, 0.4);
 }
 
 .SearchBar__input {
@@ -31,43 +31,41 @@
   outline: none;
   padding: 12px 16px;
   font-size: 17px;
-  border-radius: 50px;
+  border-radius: 30px;
   background: transparent;
-  color: #264653;
+  color: #2d2d2d;
   font-weight: 400;
 }
 
 .SearchBar__input::placeholder {
-  color: #a67c52;
+  color: #a0a0a0;
 }
 
 .SearchBar__button {
-  background: linear-gradient(135deg, #1f1611, #a67c52);
+  background: #4a4a4a;
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 18px;
-  padding: 10px;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 20px;
+  margin-left: -12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(31, 22, 17, 0.4);
+  box-shadow: 0 2px 8px rgba(74, 74, 74, 0.2);
+  white-space: nowrap;
 }
 
 .SearchBar__button:hover {
-  background: linear-gradient(135deg, #a67c52, #f4a261);
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(244, 162, 97, 0.4);
+  background: #2d2d2d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 74, 74, 0.3);
 }
 
 .SearchBar__clear {
   background: none;
   border: none;
-  color: #a67c52;
+  color: #a0a0a0;
   cursor: pointer;
   font-size: 16px;
   padding: 4px;
@@ -82,27 +80,36 @@
 }
 
 .SearchBar__clear:hover {
-  background: rgba(166, 124, 82, 0.1);
-  color: #264653;
+  background: rgba(160, 160, 160, 0.1);
+  color: #2d2d2d;
   transform: scale(1.1);
 }
 
 @media (max-width: 480px) {
   .SearchBar {
-    min-width: 250px;
-    max-width: 90%;
-    padding: 10px 15px;
+    min-width: 280px;
+    max-width: 95%;
+    padding: 8px 12px;
     margin: 0.5rem auto;
+    border-radius: 25px;
   }
 
   .SearchBar__input {
-    padding: 10px 12px;
+    padding: 8px 12px;
     font-size: 16px;
   }
 
   .SearchBar__button {
-    font-size: 18px;
-    padding: 6px;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 18px;
+    min-height: 36px;
+  }
+
+  .SearchBar__clear {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
   }
 }
 
@@ -133,7 +140,7 @@
   }
 
   .SearchBar__button {
-    font-size: 20px;
-    padding: 8px;
+    font-size: 14px;
+    padding: 6px 14px;
   }
 }

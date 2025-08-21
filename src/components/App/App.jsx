@@ -4,8 +4,11 @@ import CoffeeCard from "../CoffeeCard/CoffeeCard";
 import AddCardModal from "../AddCardModal/AddCardModal";
 import CoffeeShopModal from "../CoffeeShopModal/CoffeeShopModal";
 import MapView from "../MapView/MapView";
+import FilterSort from "../FilterSort/FilterSort";
+import { useToast } from "../Toast/useToast";
 
 const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
+  const toast = useToast();
   const presetCoffeeShops = [
     {
       id: 1,
@@ -69,7 +72,13 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   const [filteredCards, setFilteredCards] = useState(presetCoffeeShops);
   const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null);
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
-  const [currentMapLocation, setCurrentMapLocation] = useState(null);
+  const [currentMapLocation] = useState(null);
+  const [sortBy, setSortBy] = useState("date");
+  const [filterOptions, setFilterOptions] = useState({
+    rating: 0,
+    dateRange: "all",
+    nameRange: "all",
+  });
 
   useEffect(() => {
     const savedCustomShops = localStorage.getItem("customCoffeeShops");
@@ -77,7 +86,9 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
       try {
         const parsedShops = JSON.parse(savedCustomShops);
         setCustomCoffeeShops(parsedShops);
-      } catch (error) {}
+      } catch {
+        localStorage.removeItem("customCoffeeShops");
+      }
     }
   }, []);
 
@@ -96,7 +107,7 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
         return distance < 0.05;
       })
       .map((shop) => ({
-        id: shop.id.replace("custom-", ""), // Convert back to card ID
+        id: shop.id.replace("custom-", ""),
         name: shop.name,
         location: shop.address,
         rating: shop.rating || 0,
@@ -126,19 +137,82 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
       allCards = [...allCards, ...newCustomCards];
     }
 
-    if (!searchTerm || searchTerm.trim() === "") {
-      setFilteredCards(allCards);
-    } else {
-      const filtered = allCards.filter(
+    if (searchTerm && searchTerm.trim() !== "") {
+      allCards = allCards.filter(
         (card) =>
           card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           card.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
           (card.review &&
             card.review.toLowerCase().includes(searchTerm.toLowerCase()))
       );
-      setFilteredCards(filtered);
     }
-  }, [searchTerm, coffeeCards, customCoffeeShops, currentMapLocation]);
+
+    if (filterOptions.rating > 0) {
+      allCards = allCards.filter((card) => card.rating >= filterOptions.rating);
+    }
+
+    if (filterOptions.dateRange !== "all") {
+      const now = new Date();
+      let cutoffDate = new Date();
+
+      switch (filterOptions.dateRange) {
+        case "week":
+          cutoffDate.setDate(now.getDate() - 7);
+          break;
+        case "month":
+          cutoffDate.setMonth(now.getMonth() - 1);
+          break;
+        case "year":
+          cutoffDate.setFullYear(now.getFullYear() - 1);
+          break;
+        default:
+          cutoffDate = new Date(0);
+      }
+
+      allCards = allCards.filter(
+        (card) => new Date(card.dateAdded) >= cutoffDate
+      );
+    }
+
+    if (filterOptions.nameRange !== "all") {
+      allCards = allCards.filter((card) => {
+        const firstLetter = card.name.toLowerCase().charAt(0);
+        switch (filterOptions.nameRange) {
+          case "a-g":
+            return firstLetter >= "a" && firstLetter <= "g";
+          case "h-n":
+            return firstLetter >= "h" && firstLetter <= "n";
+          case "o-s":
+            return firstLetter >= "o" && firstLetter <= "s";
+          case "t-z":
+            return firstLetter >= "t" && firstLetter <= "z";
+          default:
+            return true;
+        }
+      });
+    }
+
+    const sortedCards = [...allCards].sort((a, b) => {
+      switch (sortBy) {
+        case "rating":
+          return b.rating - a.rating;
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "date":
+        default:
+          return new Date(b.dateAdded) - new Date(a.dateAdded);
+      }
+    });
+
+    setFilteredCards(sortedCards);
+  }, [
+    searchTerm,
+    coffeeCards,
+    customCoffeeShops,
+    currentMapLocation,
+    sortBy,
+    filterOptions,
+  ]);
 
   const handleAddCard = (newCard) => {
     const updatedCards = [newCard, ...coffeeCards];
@@ -169,19 +243,52 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   };
 
   const handleDeleteCard = (coffeeShopToDelete) => {
-    const updatedCards = coffeeCards.filter(
-      (card) => card.id !== coffeeShopToDelete.id
-    );
-    setCoffeeCards(updatedCards);
+    try {
+      const updatedCards = coffeeCards.filter(
+        (card) => card.id !== coffeeShopToDelete.id
+      );
+      setCoffeeCards(updatedCards);
 
-    const updatedCustomShops = customCoffeeShops.filter(
-      (shop) => shop.id !== `custom-${coffeeShopToDelete.id}`
-    );
-    setCustomCoffeeShops(updatedCustomShops);
-    localStorage.setItem(
-      "customCoffeeShops",
-      JSON.stringify(updatedCustomShops)
-    );
+      const updatedCustomShops = customCoffeeShops.filter(
+        (shop) => shop.id !== `custom-${coffeeShopToDelete.id}`
+      );
+      setCustomCoffeeShops(updatedCustomShops);
+      localStorage.setItem(
+        "customCoffeeShops",
+        JSON.stringify(updatedCustomShops)
+      );
+
+      toast.success(`${coffeeShopToDelete.name} deleted successfully`);
+    } catch (error) {
+      console.error("Failed to delete coffee shop:", error);
+      toast.error("Failed to delete coffee shop. Please try again.");
+    }
+  };
+
+  const handleSort = (newSortBy) => {
+    setSortBy(newSortBy);
+    toast.info(`Sorted by ${newSortBy === "date" ? "date added" : newSortBy}`);
+  };
+
+  const handleFilter = (newFilterOptions) => {
+    setFilterOptions(newFilterOptions);
+
+    if (newFilterOptions.rating > 0) {
+      toast.info(`Showing ${newFilterOptions.rating}+ cup coffee shops`);
+    } else if (newFilterOptions.dateRange !== "all") {
+      const rangeText = {
+        week: "last week",
+        month: "last month",
+        year: "last year",
+      };
+      toast.info(
+        `Showing coffee shops from ${rangeText[newFilterOptions.dateRange]}`
+      );
+    } else if (newFilterOptions.nameRange !== "all") {
+      toast.info(
+        `Showing coffee shops ${newFilterOptions.nameRange.toUpperCase()}`
+      );
+    }
   };
 
   const handleCardClick = (coffeeShop) => {
@@ -194,27 +301,6 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
     setSelectedCoffeeShop(null);
   };
 
-  const handleMapCoffeeShopSelect = (mapShop) => {
-    const coffeeShop = {
-      id: mapShop.id,
-      name: mapShop.name,
-      location: mapShop.address,
-      rating: 0, // Default rating for map shops
-      review: `Discovered coffee shop at ${mapShop.address}`,
-      image:
-        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=200&fit=crop",
-      dateAdded: new Date().toISOString(),
-      coordinates: mapShop.coordinates,
-    };
-
-    setSelectedCoffeeShop(coffeeShop);
-    setIsShopModalOpen(true);
-  };
-
-  const handleMapLocationChange = (lat, lng) => {
-    setCurrentMapLocation({ lat, lng });
-  };
-
   const openModal = () => setIsAddModalOpen(true);
   const closeModal = () => setIsAddModalOpen(false);
 
@@ -223,26 +309,44 @@ const App = ({ searchTerm, isAddModalOpen, setIsAddModalOpen }) => {
   return (
     <div className="App">
       <div className="app-content">
-        <div className="cards-container">
-          <div className="map-card-wrapper">
-            <MapView
-              cards={customCoffeeShops}
-              addCard={handleAddCard}
-              openAddCardModal={openModal}
-              darkMode={false}
-            />
-          </div>
+        <FilterSort
+          onSort={handleSort}
+          onFilter={handleFilter}
+          totalCount={coffeeCards.length + customCoffeeShops.length}
+          filteredCount={filteredCards.length}
+        />
 
-          {cardsToDisplay.length > 0 ? (
-            cardsToDisplay.map((card) => (
-              <CoffeeCard key={card.id} card={card} onClick={handleCardClick} />
-            ))
-          ) : (
-            <div className="no-results">
-              <p>No coffee shops found matching your search.</p>
-              <p>Try searching by name or location.</p>
-            </div>
-          )}
+        <div className="cards-container">
+          <ul className="coffee-card-list">
+            <li className="coffee-card-list-item map-card-list-item">
+              <div className="map-card-wrapper">
+                <MapView
+                  cards={customCoffeeShops}
+                  addCard={handleAddCard}
+                  openAddCardModal={openModal}
+                  darkMode={false}
+                />
+              </div>
+            </li>
+            {cardsToDisplay.length > 0 ? (
+              cardsToDisplay.map((card) => (
+                <li key={card.id} className="coffee-card-list-item">
+                  <CoffeeCard
+                    card={card}
+                    onClick={handleCardClick}
+                    onDelete={handleDeleteCard}
+                  />
+                </li>
+              ))
+            ) : (
+              <li className="coffee-card-list-item">
+                <div className="no-results">
+                  <p>No coffee shops found matching your search.</p>
+                  <p>Try searching by name or location.</p>
+                </div>
+              </li>
+            )}
+          </ul>
         </div>
       </div>
 

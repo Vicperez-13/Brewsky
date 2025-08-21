@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./components/AuthModal/AuthModal";
+import { ToastProvider } from "./components/Toast/ToastProvider";
 import App from "./components/App/App";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import Login from "./components/Login/Login";
+import FavoritesPage from "./components/FavoritesPage/FavoritesPage";
 
 const AppRouter = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,23 +21,28 @@ const AppRouter = () => {
   };
 
   return (
-    <Router>
-      <Header onSearch={handleSearch} onAddCard={handleAddCard} />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <App
-              searchTerm={searchTerm}
-              isAddModalOpen={isAddModalOpen}
-              setIsAddModalOpen={setIsAddModalOpen}
+    <AuthProvider>
+      <ToastProvider>
+        <Router>
+          <Header onSearch={handleSearch} onAddCard={handleAddCard} />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <App
+                  searchTerm={searchTerm}
+                  isAddModalOpen={isAddModalOpen}
+                  setIsAddModalOpen={setIsAddModalOpen}
+                />
+              }
             />
-          }
-        />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-      <Footer />
-    </Router>
+            <Route path="/login" element={<Login />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+          </Routes>
+          <Footer />
+        </Router>
+      </ToastProvider>
+    </AuthProvider>
   );
 };
 

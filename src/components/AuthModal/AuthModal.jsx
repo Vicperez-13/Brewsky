@@ -1,43 +1,99 @@
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, useEffect } from "react";
+import { AuthContext } from "./AuthContext";
 import "./AuthModal.css";
-
-const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const savedUser = localStorage.getItem("brewsky_user");
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+      } catch {
+        localStorage.removeItem("brewsky_user");
+      }
+    }
+  }, []);
+
   const login = (userData) => {
+    const userWithDefaults = {
+      ...userData,
+      favorites: userData.favorites || [],
+      posts: userData.posts || [],
+      bio: userData.bio || "",
+      location: userData.location || "",
+      createdAt: userData.createdAt || new Date().toISOString(),
+    };
     setIsAuthenticated(true);
-    setUser(userData);
+    setUser(userWithDefaults);
+    localStorage.setItem("brewsky_user", JSON.stringify(userWithDefaults));
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
+    localStorage.removeItem("brewsky_user");
+  };
+
+  const updateUser = (updatedData) => {
+    const updatedUser = { ...user, ...updatedData };
+    setUser(updatedUser);
+    localStorage.setItem("brewsky_user", JSON.stringify(updatedUser));
+  };
+
+  const addToFavorites = (coffeeShop) => {
+    if (!user) return;
+    const updatedFavorites = [...(user.favorites || [])];
+    const existingIndex = updatedFavorites.findIndex(
+      (fav) => fav.id === coffeeShop.id
+    );
+
+    if (existingIndex === -1) {
+      updatedFavorites.push(coffeeShop);
+    }
+
+    updateUser({ favorites: updatedFavorites });
+  };
+
+  const removeFromFavorites = (coffeeShopId) => {
+    if (!user) return;
+    const updatedFavorites = (user.favorites || []).filter(
+      (fav) => fav.id !== coffeeShopId
+    );
+    updateUser({ favorites: updatedFavorites });
+  };
+
+  const isFavorite = (coffeeShopId) => {
+    if (!user?.favorites) return false;
+    return user.favorites.some((fav) => fav.id === coffeeShopId);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        user,
+        login,
+        logout,
+        updateUser,
+        addToFavorites,
+        removeFromFavorites,
+        isFavorite,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    return {
-      isAuthenticated: false,
-      user: null,
-      login: () => {},
-      logout: () => {},
-    };
-  }
-  return context;
-};
+import { useAuth } from "./useAuth";
 
 const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -47,6 +103,28 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPosition = document.body.style.position;
+      const originalTop = document.body.style.top;
+      const scrollY = window.scrollY;
+
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.top = originalTop;
+        document.body.style.width = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -107,6 +185,15 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
+      const userData = {
+        id: Date.now(),
+        email: formData.email,
+        firstName: formData.firstName || formData.email.split("@")[0],
+        lastName: formData.lastName || "",
+        createdAt: new Date().toISOString(),
+      };
+
+      login(userData);
       alert(`${mode === "login" ? "Login" : "Signup"} successful!`);
       onClose();
 
@@ -117,7 +204,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
         firstName: "",
         lastName: "",
       });
-    } catch (error) {
+    } catch {
       setErrors({ general: "Authentication failed. Please try again." });
     } finally {
       setIsLoading(false);
@@ -139,24 +226,26 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="auth-modal-overlay" onClick={onClose}>
+    <div className="auth-modal__overlay" onClick={onClose}>
       <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="auth-modal-header">
+        <div className="auth-modal__header">
           <h2>{mode === "login" ? "Welcome Back" : "Join Brewsky"}</h2>
-          <button className="close-button" onClick={onClose}>
+          <button className="auth-modal__close-btn" onClick={onClose}>
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-modal__form">
           {errors.general && (
-            <div className="error-message general-error">{errors.general}</div>
+            <div className="auth-modal__error auth-modal__error--general">
+              {errors.general}
+            </div>
           )}
 
           {mode === "signup" && (
             <>
-              <div className="form-row">
-                <div className="form-group">
+              <div className="auth-modal__form-row">
+                <div className="auth-modal__form-group">
                   <label htmlFor="firstName">First Name</label>
                   <input
                     type="text"
@@ -164,14 +253,18 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className={errors.firstName ? "error" : ""}
+                    className={
+                      errors.firstName ? "auth-modal__input--error" : ""
+                    }
                     placeholder="Enter your first name"
                   />
                   {errors.firstName && (
-                    <span className="error-message">{errors.firstName}</span>
+                    <span className="auth-modal__error-message">
+                      {errors.firstName}
+                    </span>
                   )}
                 </div>
-                <div className="form-group">
+                <div className="auth-modal__form-group">
                   <label htmlFor="lastName">Last Name</label>
                   <input
                     type="text"
@@ -179,18 +272,22 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className={errors.lastName ? "error" : ""}
+                    className={
+                      errors.lastName ? "auth-modal__input--error" : ""
+                    }
                     placeholder="Enter your last name"
                   />
                   {errors.lastName && (
-                    <span className="error-message">{errors.lastName}</span>
+                    <span className="auth-modal__error-message">
+                      {errors.lastName}
+                    </span>
                   )}
                 </div>
               </div>
             </>
           )}
 
-          <div className="form-group">
+          <div className="auth-modal__form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
@@ -198,15 +295,15 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className={errors.email ? "error" : ""}
+              className={errors.email ? "auth-modal__input--error" : ""}
               placeholder="Enter your email"
             />
             {errors.email && (
-              <span className="error-message">{errors.email}</span>
+              <span className="auth-modal__error-message">{errors.email}</span>
             )}
           </div>
 
-          <div className="form-group">
+          <div className="auth-modal__form-group">
             <label htmlFor="password">Password</label>
             <input
               type="password"
@@ -214,16 +311,18 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className={errors.password ? "error" : ""}
+              className={errors.password ? "auth-modal__input--error" : ""}
               placeholder="Enter your password"
             />
             {errors.password && (
-              <span className="error-message">{errors.password}</span>
+              <span className="auth-modal__error-message">
+                {errors.password}
+              </span>
             )}
           </div>
 
           {mode === "signup" && (
-            <div className="form-group">
+            <div className="auth-modal__form-group">
               <label htmlFor="confirmPassword">Confirm Password</label>
               <input
                 type="password"
@@ -231,23 +330,27 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                className={errors.confirmPassword ? "error" : ""}
+                className={
+                  errors.confirmPassword ? "auth-modal__input--error" : ""
+                }
                 placeholder="Confirm your password"
               />
               {errors.confirmPassword && (
-                <span className="error-message">{errors.confirmPassword}</span>
+                <span className="auth-modal__error-message">
+                  {errors.confirmPassword}
+                </span>
               )}
             </div>
           )}
 
           <button
             type="submit"
-            className="auth-submit-button"
+            className="auth-modal__submit-btn"
             disabled={isLoading}
           >
             {isLoading ? (
-              <span className="loading-spinner">
-                <span className="spinner"></span>
+              <span className="auth-modal__loading">
+                <span className="auth-modal__spinner"></span>
                 {mode === "login" ? "Signing In..." : "Creating Account..."}
               </span>
             ) : mode === "login" ? (
@@ -257,14 +360,14 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
             )}
           </button>
 
-          <div className="auth-switch">
+          <div className="auth-modal__switch">
             {mode === "login" ? (
               <p>
                 Don't have an account?{" "}
                 <button
                   type="button"
                   onClick={handleSwitchMode}
-                  className="switch-button"
+                  className="auth-modal__switch-btn"
                 >
                   Sign up
                 </button>
@@ -275,7 +378,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
                 <button
                   type="button"
                   onClick={handleSwitchMode}
-                  className="switch-button"
+                  className="auth-modal__switch-btn"
                 >
                   Sign in
                 </button>

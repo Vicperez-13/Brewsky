@@ -4,34 +4,34 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(31, 22, 17, 0.7);
+  background: rgba(74, 74, 74, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 .CoffeeShopModal {
-  background: rgba(245, 243, 240, 0.95);
-  border-radius: 16px;
+  background: rgba(249, 249, 249, 0.95);
+  border-radius: 12px;
   width: 100%;
   max-width: 800px;
   max-height: 90vh;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(31, 22, 17, 0.3);
+  box-shadow: 0 10px 30px rgba(74, 74, 74, 0.2);
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(166, 124, 82, 0.2);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(160, 160, 160, 0.2);
 }
 
 .modal-header {
-  background: linear-gradient(135deg, #1f1611, #a67c52);
-  color: #f5f3f0;
+  background: #4a4a4a;
+  color: #ffffff;
   padding: 24px;
   display: flex;
   justify-content: space-between;
@@ -86,48 +86,118 @@
   font-size: 1rem;
 }
 
-.close-button {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  font-size: 24px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s;
-}
-
-.close-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
 .header-actions {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.delete-button {
-  background: rgba(255, 255, 255, 0.2);
+.favorite-button,
+.edit-button,
+.save-button,
+.cancel-button,
+.delete-button,
+.close-button {
+  background: transparent;
   border: none;
   color: white;
-  font-size: 18px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s;
+  transition: color 0.3s ease;
+  min-width: auto;
+}
+
+.favorite-button:hover,
+.edit-button:hover,
+.save-button:hover,
+.cancel-button:hover,
+.delete-button:hover,
+.close-button:hover {
+  background: transparent;
+  transform: none;
+}
+
+.favorite-button {
+  background: transparent !important;
+  filter: grayscale(100%) brightness(2);
+}
+
+.favorite-button.favorited {
+  filter: grayscale(0%) brightness(1);
+}
+
+.edit-button:hover {
+  color: #3b82f6;
+}
+
+.save-button:hover {
+  color: #10b981;
+}
+
+.cancel-button:hover {
+  color: #f59e0b;
 }
 
 .delete-button:hover {
-  background: rgba(255, 100, 100, 0.3);
+  color: #ef4444;
+}
+
+.close-button:hover {
+  color: #9ca3af;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.edit-input,
+.edit-select,
+.edit-textarea {
+  padding: 8px 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.edit-input::placeholder,
+.edit-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.edit-input:focus,
+.edit-select:focus,
+.edit-textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.rating-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-edit label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .delete-confirmation {

@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
-import { useAuth } from "../AuthModal/AuthModal";
+import { useAuth } from "../AuthModal/useAuth";
 import { createCard } from "../../utils/mapApi";
 import CoffeeShopModal from "../CoffeeShopModal/CoffeeShopModal";
 import SearchBar from "../SearchBar/SearchBar";
 import "./MapView.css";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoidmljcGVyZXoxMyIsImEiOiJjbWR5enAwazcwN2ZzMmpvNnRqano0dmxiIn0.NGBnqPkFdu3KuQyw3Nq81g";
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
   const mapContainer = useRef(null);
@@ -35,20 +34,6 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
       website: "radiocoffeeandbeer.com",
       description: "Local favorite with craft coffee and beer selection",
       amenities: ["WiFi", "Outdoor Seating", "Pet Friendly", "Parking"],
-      type: "demo",
-    },
-    {
-      id: 2,
-      name: "Epoch Coffee",
-      address: "221 W North Loop Blvd, Austin, TX 78751",
-      coordinates: [-97.7297, 30.3088],
-      rating: 4.4,
-      reviews: 890,
-      hours: "24 Hours",
-      phone: "(512) 454-3762",
-      website: "epochcoffee.com",
-      description: "24-hour coffee shop with cozy atmosphere",
-      amenities: ["WiFi", "24 Hours", "Study Space", "Parking"],
       type: "demo",
     },
     {
@@ -116,12 +101,47 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
 
   const handleSearch = (term) => {
     setSearchTerm(term);
+
+    const foundShop = coffeeShops.find(
+      (shop) =>
+        shop.name.toLowerCase().includes(term.toLowerCase()) ||
+        shop.address.toLowerCase().includes(term.toLowerCase()) ||
+        shop.description.toLowerCase().includes(term.toLowerCase())
+    );
+
+    if (!foundShop && term.trim() !== "") {
+      const accessToken = mapboxgl.accessToken;
+      fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          term
+        )}.json?access_token=${accessToken}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.features && data.features.length > 0 && map.current) {
+            const [lng, lat] = data.features[0].center;
+            map.current.flyTo({
+              center: [lng, lat],
+              zoom: 14,
+              speed: 2,
+              curve: 1.8,
+            });
+          }
+        })
+        .catch((err) => {
+          alert("Error searching for location. Please try again.");
+          console.error("Mapbox geocoding error:", err);
+        });
+    }
   };
 
   useEffect(() => {
     if (map.current) return;
 
     try {
+      if (mapContainer.current) {
+        mapContainer.current.innerHTML = "";
+      }
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: darkMode
@@ -149,15 +169,31 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
         }),
         "top-right"
       );
-    } catch (error) {}
-  }, [lng, lat, zoom, darkMode]);
+    } catch (error) {
+      console.error(error);
+    }
+
+    return () => {
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+      if (mapContainer.current) {
+        mapContainer.current.innerHTML = "";
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (map.current) {
-      const style = darkMode
-        ? "mapbox://styles/mapbox/dark-v11"
-        : "mapbox://styles/mapbox/light-v11";
-      map.current.setStyle(style);
+      try {
+        const style = darkMode
+          ? "mapbox://styles/mapbox/dark-v11"
+          : "mapbox://styles/mapbox/light-v11";
+        map.current.setStyle(style);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }, [darkMode]);
 
@@ -189,7 +225,9 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
         });
 
         newMarkers.push(marker);
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     if (cards && Array.isArray(cards)) {
@@ -231,7 +269,9 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
 
             newMarkers.push(marker);
           }
-        } catch (error) {}
+        } catch (error) {
+          console.error(error);
+        }
       });
     }
 
@@ -244,11 +284,11 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
         alert("Please log in to add cards");
         return;
       }
-
       const newCard = await createCard(cardData);
       addCard(newCard);
     } catch (error) {
       alert("Failed to add card. Please try again.");
+      console.error(error);
     }
   };
 
@@ -283,12 +323,12 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
         <div className="legend-item">
           <span>🔴 Red: Chain shops (Starbucks, Dunkin')</span>
         </div>
-        <div className="legend-item">
+        {/* <div className="legend-item">
           <span>🟠 Orange: Local coffee shops</span>
-        </div>
-        <div className="legend-item">
+        </div> */}
+        {/* <div className="legend-item">
           <span>🌿 Dark Green: Restaurant/Café</span>
-        </div>
+        </div> */}
         <div className="legend-item">
           <span>🟣 Purple: User-added locations</span>
         </div>
@@ -319,5 +359,4 @@ const MapView = ({ cards, addCard, openAddCardModal, darkMode }) => {
     </div>
   );
 };
-
 export default MapView;
